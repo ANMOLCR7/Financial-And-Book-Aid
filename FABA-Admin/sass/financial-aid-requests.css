@@ -1,0 +1,138 @@
+.financial-aid-requests {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    padding: 20px;
+}
+
+.financial-aid-requests .header {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.overview {
+    display: flex;
+    gap: 20px;
+}
+
+.overview-card {
+    background: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+    flex: 1;
+}
+
+.overview-card h3 {
+    margin: 0;
+    font-size: 16px;
+    color: #555;
+}
+
+.overview-card p {
+    margin: 5px 0 0 ;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.search-filter {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.search-bar {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    flex: 1;
+}
+
+.filter-dropdown {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.bulk-approve-btn,
+.bulk-reject-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    background: #3498db;
+    color: #fff;
+}
+
+.bulk-reject-btn {
+    background: #e74c3c;
+}
+
+.requests-table {
+    margin-top: 20px;
+}
+
+.requests-table table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.requests-table th,
+.requests-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+.requests-table th {
+    background-color: #34495e;
+    color:#fff;
+}
+
+.status {
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    color: #fff;
+}
+
+.status.pending {
+    background-color: #f39c12;
+}
+
+.status.approved {
+    background-color: #1abc9c;
+}
+
+.status.rejected {
+    background-color: #e74c3c;
+}
+
+.approve-btn,
+.reject-btn,
+.details-btn {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.approve-btn {
+    background: #1abc9c;
+    color: #fff;
+}
+
+.reject-btn {
+    background: #e74c3c;
+    color: #fff;
+}
+
+.details-btn {
+    background: #3498db;
+    color: #fff;
+}

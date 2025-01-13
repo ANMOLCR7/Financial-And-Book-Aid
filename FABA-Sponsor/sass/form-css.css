@@ -1,0 +1,144 @@
+/* General styling for the main wrapper */
+.main-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f4f4f4;
+    padding: 20px;
+  }
+  
+  .main-content {
+    width: 100%;
+    max-width: 1600px;
+  }
+  
+  .card {
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .card-body {
+    padding: 20px;
+  }
+  
+  h4.form-container {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+/* General container for form elements */
+.form-container {
+  display: flex;
+  flex-direction: column;
+  width: 1000px;
+  margin: 0;                  /* Remove all margins */
+  padding: 0;                 /* Remove padding */
+  box-sizing: border-box;      /* Include padding/border in width calculation */
+}
+
+/* Form styling */
+form {
+  display: grid;
+  gap: 15px;
+  width: 100%;                /* Full width of the form */
+  margin: 0;                  /* Remove margins */
+  padding: 0;                 /* Remove padding */
+}
+
+/* Styling for labels */
+label {
+  font-size: 1rem;
+  color: #555;
+  text-align: left;
+  width: 100%;
+  margin: 0;                  /* Remove any margins */
+}
+
+/* Styling for inputs and selects */
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+select {
+  width: 175%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  box-sizing: border-box;      /* Include padding in width calculation */
+  margin: 0;                  /* Remove margins */
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="tel"]:focus,
+select:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+/* Button Styling */
+button {
+  background-color: #007bff;
+  color: #ffffff;
+  border: none;
+  padding: 10px 0;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 175%;                /* Full width of the button */
+  text-align: center;
+  margin: 0;                  /* Remove margins */
+  box-sizing: border-box;      /* Include padding in width calculation */
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+/* Donor Info Section */
+#donor-info {
+  margin-top: 20px;
+}
+
+#donor-info h3 {
+  font-size: 1.25rem;
+  color: #333;
+  text-align: center;
+}
+
+/* Donor List */
+#donor-list {
+  list-style-type: none;
+  padding: 0;
+  text-align: center;
+}
+
+#donor-list li {
+  padding: 10px 0;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+#donor-list li:last-child {
+  border-bottom: none;
+}
+
+/* Media query for small screens */
+@media (max-width: 760px) {
+  .card-body {
+    padding: 15px;
+  }
+
+  label,
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  select,
+  button {
+    font-size: 0.875rem;
+  }
+}
+
