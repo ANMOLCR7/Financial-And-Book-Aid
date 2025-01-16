@@ -230,7 +230,6 @@
         <ul>
           <li><a href="/student/Dashboard"><i class="material-icons-outlined">arrow_right</i>Home</a></li>
             <li><a href="/student/Apply"><i class="material-icons-outlined">arrow_right</i>Financial Aid Apply</a></li>
-            <li><a href="/student/status"><i class="material-icons-outlined">arrow_right</i>Status</a></li>
             <li><a href="/student/history"><i class="material-icons-outlined">arrow_right</i>History</a></li>
             <li><a href="/student/request"><i class="material-icons-outlined">arrow_right</i>Book Request</a></li>
             <li><a href="/student/donate"><i class="material-icons-outlined">arrow_right</i>Book Donate</a></li>
@@ -250,138 +249,141 @@
           <div class="card">
             <div class="card-body p-4">
               <h5 class="mb-4">Book Donate</h5>
-              <form id="donationForm" action="/submit-book-donation" method="Post">
+              <form id="donationForm" action="/api/book-donations" method="POST">
                 <div class="row mb-3">
-                  <label for="input42" class="col-sm-3 col-form-label">Enter Your Name</label>
+                  <label for="studentId" class="col-sm-3 col-form-label">Student ID</label>
                   <div class="col-sm-9">
                     <div class="position-relative input-icon">
-                      <input type="text" class="form-control" id="input42" name="name" placeholder="Enter Your Name" required>
+                      <input type="text" class="form-control" id="studentId" name="studentId" placeholder="Enter Your Student ID" required>
+                      <span class="position-absolute top-50 translate-middle-y"><i class="material-icons-outlined fs-5">badge</i></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <label for="studentName" class="col-sm-3 col-form-label">Enter Your Name</label>
+                  <div class="col-sm-9">
+                    <div class="position-relative input-icon">
+                      <input type="text" class="form-control" id="studentName" name="studentName" placeholder="Enter Your Name" required>
                       <span class="position-absolute top-50 translate-middle-y"><i class="material-icons-outlined fs-5">person_outline</i></span>
                     </div>
                   </div>
                 </div>
                 <div class="row mb-3">
-                  <label for="input43" class="col-sm-3 col-form-label">Phone No</label>
+                  <label for="phoneNumber" class="col-sm-3 col-form-label">Phone No</label>
                   <div class="col-sm-9">
                     <div class="position-relative input-icon">
-                      <input type="text" class="form-control" id="input43" name="phone" placeholder="Phone No" required>
+                      <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" placeholder="Phone No" required>
                       <span class="position-absolute top-50 translate-middle-y"><i class="material-icons-outlined fs-5">phone</i></span>
                     </div>
                   </div>
                 </div>
                 <div class="row mb-3">
-                  <label for="input44" class="col-sm-3 col-form-label">Email Address</label>
+                  <label for="emailAddress" class="col-sm-3 col-form-label">Email Address</label>
                   <div class="col-sm-9">
                     <div class="position-relative input-icon">
-                      <input type="email" class="form-control" id="input44" name="email" placeholder="Email Address" required>
+                      <input type="email" class="form-control" id="emailAddress" name="emailAddress" placeholder="Email Address" required>
                       <span class="position-absolute top-50 translate-middle-y"><i class="material-icons-outlined fs-5">send</i></span>
                     </div>
                   </div>
                 </div>
                 <div class="row mb-3">
-                  <label for="input45" class="col-sm-3 col-form-label">Book Name</label>
+                  <label for="bookTitle" class="col-sm-3 col-form-label">Book Name</label>
                   <div class="col-sm-9">
                     <div class="position-relative input-icon">
-                      <input type="text" class="form-control" id="input45" name="bookName" placeholder="Book Name" required>
+                      <input type="text" class="form-control" id="bookTitle" name="bookTitle" placeholder="Book Name" required>
                       <span class="position-absolute top-50 translate-middle-y"><i class="material-icons-outlined fs-5">send</i></span>
                     </div>
                   </div>
                 </div>
                 <div class="row mb-3">
-                  <label for="input47" class="col-sm-3 col-form-label">Address</label>
+                  <label for="address" class="col-sm-3 col-form-label">Address</label>
                   <div class="col-sm-9">
-                    <textarea class="form-control" id="input47" name="address" rows="3" placeholder="Address" required></textarea>
+                    <textarea class="form-control" id="address" name="address" rows="3" placeholder="Address" required></textarea>
                   </div>
                 </div>
                 <div class="row mb-3">
                   <label class="col-sm-3 col-form-label"></label>
                   <div class="col-sm-9">
                     <div class="form-check">
-                      <input class="form-check-input" type="checkbox" id="input48" name="agree" required>
-                      <label class="form-check-label" for="input48">I agree to donate</label>
+                      <input class="form-check-input" type="checkbox" id="agree" name="agree" required>
+                      <label class="form-check-label" for="agree">I agree to donate</label>
                     </div>
                   </div>
                 </div>
                 <div class="row">
                   <label class="col-sm-3 col-form-label"></label>
                   <div class="col-sm-9">
-                    <div class="d-md-flex d-grid align-items-center gap-3">
-                      <button type="submit" class="btn btn-grd-primary px-4">Submit</button>
-                      <button type="reset" class="btn btn-grd-primary px-4">Reset</button>
-                    </div>
+                    <button type="submit" class="btn btn-grd-primary px-4">Submit</button>
+                    <button type="reset" class="btn btn-grd-primary px-4">Reset</button>
                   </div>
                 </div>
               </form>
+              <script>
+                document.addEventListener('DOMContentLoaded', () => {
+  const form = document.getElementById('donationForm');
+
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    // Gather form values
+    const studentId = document.getElementById('studentId').value;
+    const studentName = document.getElementById('studentName').value.split(' ');
+    const firstName = studentName[0];
+    const lastName = studentName[1] || '';
+    const phoneNumber = document.getElementById('phoneNumber').value;
+    const emailAddress = document.getElementById('emailAddress').value;
+    const bookTitle = document.getElementById('bookTitle').value;
+    const address = document.getElementById('address').value;
+
+    // Validate required fields
+    if (!studentId || !firstName || !phoneNumber || !emailAddress || !bookTitle || !address) {
+      alert('Please fill in all required fields.');
+      return;
+    }
+
+    // Send data to the server
+    try {
+      const response = await fetch('/api/book-donations', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          studentId,
+          firstName,
+          lastName,
+          phoneNumber,
+          emailAddress,
+          bookTitle,
+          address,
+        }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        alert(data.message);
+      } else {
+        alert(`Error: ${data.message}`);
+      }
+    } catch (error) {
+      console.error('Error submitting the form:', error);
+      alert('Failed to submit the form. Please try again.');
+    }
+  });
+});
+
+                // Example function to update the book requests table
+                function updateBookRequestsTable() {
+                  // Logic to update the book requests table (can be updated dynamically)
+                  console.log('Table updated with the new request data.');
+                }
+              </script>
+              
             </div>
           </div>  
         </div>
       </div><!--end row-->
     </div>
   </main>
-  
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const form = document.getElementById('donationForm');
-  
-      form.addEventListener('submit', (event) => {
-        event.preventDefault(); // Prevent the form from submitting the traditional way
-        
-        // Gather form values
-        const studentName = document.getElementById('input42').value;
-        const phoneNumber = document.getElementById('input43').value;
-        const emailAddress = document.getElementById('input44').value;
-        const bookTitle = document.getElementById('input45').value;
-        const address = document.getElementById('input47').value;
-        
-        // Validate form values (additional validation can be added here)
-        if (!studentName || !phoneNumber || !emailAddress || !bookTitle || !address) {
-          alert('Please fill in all required fields.');
-          return;
-        }
-        
-        // Show a confirmation message
-        alert(`Thank you for your donation!\nName: ${studentName}\nPhone: ${phoneNumber}\nEmail: ${emailAddress}\nBook: ${bookTitle}\nAddress: ${address}`);
-        
-        // Process the form data (send it to a server)
-        sendFormData({ studentName, phoneNumber, emailAddress, bookTitle, address });
-      });
-  
-      form.addEventListener('reset', () => {
-        // Add your form reset logic here if needed
-        alert('Form reset successfully!');
-      });
-    });
-  
-    // Function to send form data to a server
-    function sendFormData(data) {
-      fetch('/submit-book-donation', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-      })
-      .then(response => response.json())
-      .then(responseData => {
-        console.log('Success:', responseData);
-  
-        // Show success message to the user
-        alert(responseData.message);  // Example: 'Donation submitted successfully!'
-  
-        // Optionally, update the donations table
-        updateDonationsTable();
-      })
-      .catch((error) => {
-        console.error('Error:', error);
-        alert('An error occurred while submitting the donation. Please try again later.');
-      });
-    }
-  
-    // Example function to update the donations table
-    function updateDonationsTable() {
-      // Logic to update the donations table
-    }
-  </script>
+
   <!--end main wrapper-->
 
 

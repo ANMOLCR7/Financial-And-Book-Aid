@@ -264,12 +264,11 @@
                     <table id="example" class="table table-striped table-bordered" style="width:100%">
                         <thead>
                             <tr>
-                                <th>Request ID</th>
+                                <th>Student ID</th>
                                 <th>Name</th>
                                 <th>Amount Requested</th>
                                 <th>Purpose</th>
                                 <th>Status</th>
-                                <th>Payment Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -278,12 +277,11 @@
                         </tbody>
                         <tfoot>
                             <tr>
-                                <th>Request ID</th>
+                                <th>Student ID</th>
                                 <th>Name</th>
                                 <th>Amount Requested</th>
                                 <th>Purpose</th>
                                 <th>Status</th>
-                                <th>Payment Status</th>
                                 <th>Action</th>
                             </tr>
                         </tfoot>
@@ -293,24 +291,31 @@
         </div>
 
         <!-- Modal for Bank Details -->
-        <div class="modal" id="bankDetailsModal" tabindex="-1" aria-labelledby="bankDetailsModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="bankDetailsModalLabel">Student Bank Details</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <p><strong>Bank Account Number:</strong> <span id="bankAccountNo"></span></p>
-                        <p><strong>IFSC Code:</strong> <span id="ifscCode"></span></p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary" onclick="processPayment()">Make Payment</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+<div class="modal" id="bankDetailsModal" tabindex="-1" aria-labelledby="bankDetailsModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="bankDetailsModalLabel">Student Bank Details</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+              <p><strong>Bank Account Number:</strong> <span id="bankAccountNo"></span></p>
+              <p><strong>IFSC Code:</strong> <span id="ifscCode"></span></p>
+
+              <!-- New Input for Amount -->
+              <div class="mb-3">
+                  <label for="paymentAmount" class="form-label">Amount to Pay</label>
+                  <input type="number" class="form-control" id="paymentAmount" placeholder="Enter amount to pay" min="0" required>
+              </div>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" onclick="processPayment()">Make Payment</button>
+          </div>
+      </div>
+  </div>
+</div>
+
 
         <script>
             // Fetch and display financial aid requests
@@ -321,15 +326,13 @@
                     data.forEach(request => {
                         const row = document.createElement('tr');
                         row.innerHTML = `
-                            <td>${request.request_id}</td>
+                            <td>${request.student_id}</td>
                             <td>${request.first_name} ${request.last_name}</td>
                             <td>${request.amount_requested}</td>
                             <td>${request.purposes}</td>
                             <td>${request.status}</td>
-                            <td>${request.payment_status}</td>
                             <td>
                                 <button class="btn btn-primary" onclick="approveRequest(${request.request_id}, ${request.student_id})">Approve</button>
-                                <button class="btn btn-danger" onclick="rejectRequest(${request.request_id})">Reject</button>
                             </td>
                         `;
                         tableBody.appendChild(row);
@@ -338,7 +341,7 @@
                 .catch(error => {
                     console.error('Error fetching financial aid requests:', error);
                 });
-
+//Approve requests
                 function approveRequest(requestId, studentId) {
     console.log(`Approving request: ${requestId}, for student: ${studentId}`);
     fetch(`/sponsor/approve-request/${requestId}`, { method: 'POST' })
@@ -352,49 +355,58 @@
             console.log('Data from approval:', data);
             alert('Request approved');
             fetch(`/sponsor/get-student-bank-details/${studentId}`)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Error fetching bank details');
-                    }
-                    return response.json();
-                })
+                .then(response => response.json())
                 .then(bankData => {
-                    console.log('Bank details:', bankData);
                     document.getElementById('bankAccountNo').textContent = bankData.bank_account_no;
+                    document.getElementById('bankAccountNo').setAttribute('data-request-id', requestId); // Add request ID to modal
                     document.getElementById('ifscCode').textContent = bankData.ifsc_code;
+
                     const modal = new bootstrap.Modal(document.getElementById('bankDetailsModal'));
                     modal.show();
                 })
                 .catch(error => {
                     console.error('Error fetching bank details:', error);
-                    alert('Error fetching bank details.');
+                    alert('Failed to fetch bank details.');
                 });
         })
         .catch(error => {
             console.error('Error approving request:', error);
-            alert('Error approving request.');
+            alert('Failed to approve request.');
         });
 }
 
+function processPayment() {
+    const paymentAmount = parseFloat(document.getElementById('paymentAmount').value);
+    const requestId = document.getElementById('bankAccountNo').getAttribute('data-request-id');
+    const sponsorId = 1; // Replace with the actual sponsor ID, or fetch dynamically if available.
 
-            function rejectRequest(requestId) {
-                fetch(`/sponsor/reject-request/${requestId}`, {
-                    method: 'POST'
-                })
-                .then(response => response.json())
-                .then(data => {
-                    alert('Request rejected');
-                    location.reload(); // Reload the page to reflect the changes
-                })
-                .catch(error => {
-                    console.error('Error rejecting request:', error);
-                });
-            }
+    if (!paymentAmount || paymentAmount <= 0) {
+        alert('Please enter a valid payment amount.');
+        return;
+    }
 
-            function processPayment() {
-                alert('Payment processing...');
-                // Add payment processing logic here
+    fetch(`/sponsor/contribute/${requestId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ sponsorId, paymentAmount }),
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                alert(`Error: ${data.error}`);
+            } else {
+                alert('Payment processed successfully.');
+                location.reload(); // Reload the page to reflect the updated contributions
             }
+        })
+        .catch(error => {
+            console.error('Error processing payment:', error);
+            alert('Failed to process payment. Please try again.');
+        });
+}
+
         </script>
     </div>
 </main>

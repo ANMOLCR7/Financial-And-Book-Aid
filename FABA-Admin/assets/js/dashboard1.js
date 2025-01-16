@@ -7,7 +7,7 @@ $(function () {
 // chart 1
 
 var options = {
-    series: [7],
+    series: [6],
     chart: {
         height: 180,
         type: 'radialBar',

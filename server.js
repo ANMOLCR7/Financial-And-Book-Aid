@@ -33,6 +33,7 @@ const db = mysql.createPool({
     }
 })();
 
+//Student Panel
 // Handle Financial Aid Form Submission
 app.post('/submit-financial-aid', async (req, res) => {
     console.log('Received Data:', req.body); // Log the received data for debugging
@@ -82,76 +83,157 @@ app.post('/submit-financial-aid', async (req, res) => {
     }
 });
 
-    // Handle Book Aid Form Submission
-    app.post('/submit-book-request', async (req, res) => {
-        console.log('Received Book Request Data:', req.body); // Log the received data
-    
-        try {
-            const {
-                studentId, firstName, lastName, phoneNumber, emailAddress, bookTitle, address
-            } = req.body;
-    
-            // Validate required fields
-            if (!studentId || !firstName || !lastName || !phoneNumber || !emailAddress || !bookTitle || !address) {
-                return res.status(400).send('Missing required fields: student ID, first name, last name, phone number, email, book title, and address are required.');
-            }
-    
-            // SQL Query to insert book request
-            const query = `
-                INSERT INTO book_aid_requests (student_id, first_name, last_name, phone_number, email_address, book_title, address)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
-            `;
-            
-            const values = [
-                studentId, firstName, lastName, phoneNumber, emailAddress, bookTitle, address
-            ];
-    
-            // Execute Query using promise-based mysql2
-            const [result] = await db.execute(query, values);
-    
-            console.log('Book request submitted successfully:', result);
-            res.status(200).send('Book request submitted successfully');
-        } catch (error) {
-            console.error('Error processing book request:', error); // Log the error
-            res.status(500).send('Internal Server Error');
-        }
-    });
-    
+// Endpoint to fetch financial aid requests for an individual student
+app.get('/api/financial-aid-requests/:student_id', async (req, res) => {
+    const studentId = req.params.student_id; // Get the student ID from the URL parameter
+    try {
+      const [rows] = await db.query(
+        'SELECT * FROM financial_aid_requests WHERE student_id = ?', 
+        [studentId]
+      );
+      res.json(rows); // Send the student's financial aid requests as JSON
+    } catch (error) {
+      console.error('Error fetching financial aid requests:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  });
+  
+// Endpoint to handle book donations
+app.post('/api/book-donations', async (req, res) => {
+    console.log('Received Book Donation Data:', req.body); // Log the received data
 
-    // Endpoint to handle book donations
-    app.post('/submit-book-donation', async (req, res) => {
-        console.log('Received Donation Data:', req.body); // Log the received data
-    
-        try {
-            const {
-                studentName, phoneNumber, emailAddress, bookTitle, address
-            } = req.body;
-    
-            // Validate required fields
-            if (!studentName || !phoneNumber || !emailAddress || !bookTitle || !address) {
-                return res.status(400).send('Missing required fields: student name, phone number, email, book title, and address are required.');
-            }
-    
-            // SQL Query to insert book donation
-            const query = `
-                INSERT INTO book_donations (student_name, phone_number, email_address, book_title, address)
-                VALUES (?, ?, ?, ?, ?)
-            `;
-            
-            const values = [
-                studentName, phoneNumber, emailAddress, bookTitle, address
-            ];
-    
-            // Execute Query using promise-based mysql2
-            const [result] = await db.execute(query, values);
-    
-            console.log('Donation submitted successfully:', result);
-            res.status(200).send('Donation submitted successfully');
-        } catch (error) {
-            console.error('Error processing donation:', error); // Log the error
-            res.status(500).send('Internal Server Error');
+    try {
+        const {
+            studentId, firstName, lastName, phoneNumber, emailAddress, bookTitle, address
+        } = req.body;
+
+        // Validate required fields
+        if (!studentId || !firstName || !lastName || !phoneNumber || !emailAddress || !bookTitle || !address) {
+            console.error('Missing fields:', { studentId, firstName, lastName, phoneNumber, emailAddress, bookTitle, address });
+            return res.status(400).json({
+                error: true,
+                message: 'Missing required fields: student ID, first name, last name, phone number, email, book title, and address are required.',
+            });
         }
-    });
+
+        // SQL Query to insert book donation
+        const query = `
+            INSERT INTO book_donations (student_id, first_name, last_name, phone_number, email_address, book_title, address)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        `;
+
+        const values = [
+            studentId, firstName, lastName, phoneNumber, emailAddress, bookTitle, address
+        ];
+
+        // Execute Query using promise-based mysql2
+        const [result] = await db.execute(query, values);
+
+        console.log('Book donation submitted successfully:', result);
+        res.status(200).json({ success: true, message: 'Donation submitted successfully' });
+    } catch (error) {
+        console.error('Error processing donation:', error); // Log the error
+        res.status(500).json({ error: true, message: 'Internal Server Error' });
+    }
+});
+
+//admin check the donations
+app.get('/api/book-donations', async (req, res) => {
+    try {
+        // Query to get all donations
+        const query = 'SELECT * FROM book_donations';
+        const [rows] = await db.execute(query);
+
+        if (rows.length > 0) {
+            res.status(200).json({
+                success: true,
+                donations: rows, // Send the donations as an array
+            });
+        } else {
+            res.status(200).json({
+                success: false,
+                message: 'No donations found.',
+            });
+        }
+    } catch (error) {
+        console.error('Error fetching donations:', error);
+        res.status(500).json({
+            error: true,
+            message: 'Internal Server Error.',
+        });
+    }
+});
+
+ //Admin Panel  
+//Admin dashboard
+// API to fetch total students count
+app.get('/api/total-students', async (req, res) => {
+    try {
+      const [rows] = await db.query(`SELECT COUNT(*) AS total_students FROM students WHERE status = 'Active'`);
+      res.json(rows[0]);
+    } catch (error) {
+      console.error('Error fetching total students:', error);
+      res.status(500).send('Internal Server Error');
+    }
+  });
+
+  // API to fetch book donations grouped by month
+app.get('/api/book-donations', async (req, res) => {
+    try {
+        const query = `
+            SELECT DATE_FORMAT(donation_date, '%b') AS month, COUNT(*) AS donations
+            FROM book_donations
+            GROUP BY MONTH(donation_date)
+            ORDER BY MONTH(donation_date);
+        `;
+        const [rows] = await db.query(query);
+        res.json(rows);
+    } catch (error) {
+        console.error('Error fetching book donations:', error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+
+ // API endpoint to fetch pending financial aid requests data by month
+app.get('/api/financial-aid', async (req, res) => {
+    const query = `
+        SELECT MONTH(submission_date) AS month, COUNT(*) AS pending_count
+        FROM financial_aid_requests
+        WHERE status = 'Pending'
+        GROUP BY MONTH(submission_date)
+        ORDER BY MONTH(submission_date)
+    `;
+
+    try {
+        const [results] = await db.query(query); // Use promise-based query
+        res.json(results); // Send the results as JSON response
+    } catch (err) {
+        res.status(500).json({ error: err.message }); // Send error message if query fails
+    }
+});
+
+
+// API endpoint to fetch the number of sponsors per month
+app.get('/api/sponsors', async (req, res) => {
+    try {
+        // Query the database for sponsor counts per month using promises
+        const [rows] = await db.query(`
+            SELECT MONTH(created_at) AS month, COUNT(*) AS sponsor_count
+            FROM sponsors
+            WHERE status = 'Active'
+            GROUP BY MONTH(created_at)
+            ORDER BY MONTH(created_at)
+        `);
+        
+        // Send the results as JSON to the frontend
+        res.json(rows);
+    } catch (err) {
+        // Handle any errors during the database query
+        console.error(err);
+        res.status(500).json({ error: err.message });
+    }
+});
 
     // Endpoint to get all financial aid requests
 app.get('/api/financial-aid-requests', async (req, res) => {
@@ -164,64 +246,98 @@ app.get('/api/financial-aid-requests', async (req, res) => {
     }
 });
 
-// Endpoint to approve a financial aid request
-app.post('/api/approve-request/:id', async (req, res) => {
-    const requestId = req.params.id;
+// Get all admin financial aid requests
+app.get('/api/financial-aid-requests', async (req, res) => {
     try {
-        await db.execute('UPDATE financial_aid_requests SET status = "Approved" WHERE request_id = ?', [requestId]);
-        res.status(200).json({ message: 'Request approved' });
+        const query = `
+            SELECT request_id, student_id, first_name, last_name, amount_requested, 
+                   purposes, bank_account_no, ifsc_code, university, course, year, board, status, submission_date, review_date 
+            FROM financial_aid_requests;
+        `;
+        const [rows] = await db.execute(query);
+        res.json(rows);
     } catch (error) {
-        console.error('Error updating request status:', error);
-        res.status(500).json({ error: 'Failed to approve request' });
+        console.error('Error fetching financial aid requests:', error);
+        res.status(500).json({ message: 'Error fetching financial aid requests' });
     }
 });
 
-// Endpoint to reject a financial aid request
-app.post('/api/reject-request/:id', async (req, res) => {
-    const requestId = req.params.id;
-    try {
-        await db.execute('UPDATE financial_aid_requests SET status = "Rejected" WHERE request_id = ?', [requestId]);
-        res.status(200).json({ message: 'Request rejected' });
-    } catch (error) {
-        console.error('Error updating request status:', error);
-        res.status(500).json({ error: 'Failed to reject request' });
+// Get specific financial aid request details by ID
+app.get('/api/financial-aid-requests/:id', async (req, res) => {
+    const requestId = parseInt(req.params.id, 10);  // Make sure the ID is an integer
+    console.log('Received requestId:', requestId);  // Check received request ID
+
+    const query = `
+        SELECT * 
+        FROM financial_aid_requests 
+        WHERE request_id = ?;
+    `;
+    console.log('Executing query:', query, 'with parameters:', [requestId]);  // Log the query
+
+    const [rows] = await db.execute(query, [requestId]);
+    console.log('Query result:', rows);  // Log the result from the query
+
+    if (rows.length > 0) {
+        res.json(rows[0]);
+    } else {
+        res.status(404).json({ message: 'Request not found' });
     }
 });
 
-// Endpoint to fetch all book aid requests for admin
-app.get('/admin/book-aid-requests', async (req, res) => {
+
+
+
+//admin to see book donations
+app.get('/api/admin/book-donations', async (req, res) => {
+    // Example check for admin authentication (this depends on your auth logic)
+    if (!req.user || !req.user.isAdmin) {
+        return res.status(403).json({ error: true, message: 'Access denied' });
+    }
+
     try {
-        const [results] = await db.execute('SELECT * FROM book_aid_requests');
-        res.json(results);  // Send the data as JSON
+        const query = 'SELECT donation_id, book_title, CONCAT(first_name, " ", last_name) AS student_name, phone_number, email_address FROM book_donations';
+        const [result] = await db.execute(query);
+        
+        res.status(200).json({
+            success: true,
+            data: result
+        });
     } catch (error) {
-        console.error('Error fetching book aid requests:', error);
-        res.status(500).json({ error: 'Database error' });
+        console.error('Error fetching book donations:', error);
+        res.status(500).json({
+            error: true,
+            message: 'Failed to fetch book donations.'
+        });
     }
 });
 
-// Approve a book aid request
-app.post('/admin/approve-request/:id', async (req, res) => {
-    const requestId = req.params.id;
+//admin check the donations
+app.get('/api/book-donations', async (req, res) => {
     try {
-        await db.execute('UPDATE book_aid_requests SET status = "Approved" WHERE student_id = ?', [requestId]);
-        res.status(200).json({ message: 'Request approved' });
-    } catch (error) {
-        console.error('Error updating request status:', error);
-        res.status(500).json({ error: 'Failed to approve request' });
-    }
-});
+        // Query to get all donations
+        const query = 'SELECT * FROM book_donations';
+        const [rows] = await db.execute(query);
 
-// Reject a book aid request
-app.post('/admin/reject-request/:id', async (req, res) => {
-    const requestId = req.params.id;
-    try {
-        await db.execute('UPDATE book_aid_requests SET status = "Rejected" WHERE student_id = ?', [requestId]);
-        res.status(200).json({ message: 'Request rejected' });
+        if (rows.length > 0) {
+            res.status(200).json({
+                success: true,
+                donations: rows, // Send the donations as an array
+            });
+        } else {
+            res.status(200).json({
+                success: false,
+                message: 'No donations found.',
+            });
+        }
     } catch (error) {
-        console.error('Error updating request status:', error);
-        res.status(500).json({ error: 'Failed to reject request' });
+        console.error('Error fetching donations:', error);
+        res.status(500).json({
+            error: true,
+            message: 'Internal Server Error.',
+        });
     }
 });
+ 
 
 //Amin manage Sponsors API Endpoint
 // API endpoint to get all sponsors
@@ -235,27 +351,13 @@ app.get('/api/getSponsors', async (req, res) => {
     }
 });
 
-// Endpoint to fetch all admin manage students
-// API endpoint to fetch students
-app.get('/api/getStudents', async (req, res) => {
-    try {
-      const [rows] = await db.query('SELECT * FROM students');
-      res.json({ data: rows });
-    } catch (err) {
-      console.error('Error fetching students:', err);
-      res.status(500).send({ error: 'Error fetching students' });
-    }
-  });
-
-
-
 
 //-----Sponsor API Endpoints-----
 //<Sponsors panel(1.View-Book-Requests)
 // Endpoint to fetch all financial aid requests for sponsors
 app.get('/sponsor/financial-aid-requests', async (req, res) => {
     try {
-        const [results] = await db.execute('SELECT * FROM financial_aid_requests WHERE status = "Approved"');
+        const [results] = await db.execute('SELECT * FROM financial_aid_requests WHERE status = "Pending"');
         res.json(results);  // Send the data as JSON
     } catch (error) {
         console.error('Error fetching financial aid requests:', error);
@@ -269,7 +371,7 @@ app.post('/sponsor/approve-request/:requestId', async (req, res) => {
     try {
         // Update the request status in the database
         const [result] = await db.execute(
-            'UPDATE financial_aid_requests SET payment_status = "Approved" WHERE request_id = ?',
+            'UPDATE financial_aid_requests SET status = "Approved" WHERE request_id = ?',
             [requestId]
             
         );
@@ -286,18 +388,35 @@ app.post('/sponsor/approve-request/:requestId', async (req, res) => {
     }
 });
 
-
-// Reject a financial aid request
-app.post('/sponsor/reject-request/:requestId', async (req, res) => {
+//Sponsors Making contribution
+app.post('/sponsor/contribute/:requestId', async (req, res) => {
     const { requestId } = req.params;
+    const { sponsorId, paymentAmount } = req.body;
+
+    if (!paymentAmount || paymentAmount <= 0) {
+        return res.status(400).json({ error: 'Invalid contribution amount' });
+    }
+
     try {
-        await db.execute('UPDATE financial_aid_requests SET status = "Rejected" WHERE request_id = ?', [requestId]);
-        res.json({ message: 'Request rejected successfully' });
+        // Insert the contribution into the financial_contributions table
+        await db.execute(
+            'INSERT INTO financial_contributions (sponsor_id, request_id, contribution_amount) VALUES (?, ?, ?)',
+            [sponsorId, requestId, paymentAmount]
+        );
+
+        // Update the contribution_amount in the financial_aid_requests table
+        await db.execute(
+            'UPDATE financial_aid_requests SET contribution_amount = (SELECT IFNULL(SUM(contribution_amount), 0) FROM financial_contributions WHERE request_id = ?) WHERE request_id = ?',
+            [requestId, requestId]
+        );
+
+        res.status(200).json({ message: 'Contribution recorded successfully' });
     } catch (error) {
-        console.error('Error rejecting request:', error);
-        res.status(500).json({ error: 'Failed to reject request' });
+        console.error('Error recording contribution:', error);
+        res.status(500).json({ error: 'Failed to record contribution' });
     }
 });
+
 
 // Endpoint to fetch student bank details
 app.get('/sponsor/get-student-bank-details/:studentId', async (req, res) => {
@@ -328,6 +447,7 @@ app.get('/sponsor/financial-requests', async (req, res) => {
                 last_name, 
                 purposes,
                 amount_requested, 
+                contribution_amount,
                 submission_date 
             FROM financial_aid_requests
             WHERE status = 'Approved'
