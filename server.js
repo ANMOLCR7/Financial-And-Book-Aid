@@ -5,14 +5,25 @@ const path = require('path');
 const bcrypt = require('bcrypt');
 const app = express();
 const PORT = 3000;
+const session = require('express-session');
+
+// Set up session middleware
+app.use(session({
+    secret: 'your-secret-key',  // This can be any random string, used to sign the session cookie
+    resave: false,              // Do not save session if it was not modified
+    saveUninitialized: true,    // Save uninitialized sessions (if new)
+    cookie: { secure: false }   // If using HTTPS, set secure: true
+}));
+
 
 // Middleware
 app.use(bodyParser.json());
 app.use(express.static('public'));
+app.use(express.urlencoded({ extended: true }));
 
 // Database Connection
 const db = mysql.createPool({
-    host: 'localhost',
+    host: '127.0.0.1',
     user: 'root',
     password: 'root',
     database: 'faba_project',
@@ -20,6 +31,7 @@ const db = mysql.createPool({
     connectionLimit: 10,
     queueLimit: 0
 });
+
 
 // Test Database Connection
 (async () => {
@@ -178,25 +190,39 @@ app.get('/api/total-students', async (req, res) => {
   });
 
   // API to fetch book donations grouped by month
-app.get('/api/book-donations', async (req, res) => {
+  app.get('/api/monthly-book-donations', async (req, res) => {
     try {
-        const query = `
-            SELECT DATE_FORMAT(donation_date, '%b') AS month, COUNT(*) AS donations
-            FROM book_donations
-            GROUP BY MONTH(donation_date)
-            ORDER BY MONTH(donation_date);
-        `;
-        const [rows] = await db.query(query);
-        res.json(rows);
+      // The updated SQL query to count donations per month
+      const query = `
+        SELECT
+          DATE_FORMAT(donation_date, '%b %Y') AS month,
+          COUNT(*) AS donations
+        FROM book_donations
+        GROUP BY DATE_FORMAT(donation_date, '%b %Y')
+        ORDER BY MIN(donation_date);
+      `;
+      
+      const [rows] = await db.query(query);
+  
+      // Format the response to match the desired structure
+      const response = {
+        success: true,
+        donations: rows
+      };
+  
+      res.json(response);
     } catch (error) {
-        console.error('Error fetching book donations:', error);
-        res.status(500).send('Internal Server Error');
+      console.error('Error fetching book donations:', error);
+      res.status(500).send('Internal Server Error');
     }
-});
-
+  });
+  
+  
+  
+  
 
  // API endpoint to fetch pending financial aid requests data by month
-app.get('/api/financial-aid', async (req, res) => {
+ app.get('/api/pending-financial-aid', async (req, res) => {
     const query = `
         SELECT MONTH(submission_date) AS month, COUNT(*) AS pending_count
         FROM financial_aid_requests
@@ -204,14 +230,15 @@ app.get('/api/financial-aid', async (req, res) => {
         GROUP BY MONTH(submission_date)
         ORDER BY MONTH(submission_date)
     `;
-
+  
     try {
-        const [results] = await db.query(query); // Use promise-based query
-        res.json(results); // Send the results as JSON response
+      const [results] = await db.query(query); // Use promise-based query
+      res.json(results); // Send the results as JSON response
     } catch (err) {
-        res.status(500).json({ error: err.message }); // Send error message if query fails
+      res.status(500).json({ error: err.message }); // Send error message if query fails
     }
-});
+  });
+  
 
 
 // API endpoint to fetch the number of sponsors per month
@@ -262,30 +289,46 @@ app.get('/api/financial-aid-requests', async (req, res) => {
     }
 });
 
-// Get specific financial aid request details by ID
-app.get('/api/financial-aid-requests/:id', async (req, res) => {
-    const requestId = parseInt(req.params.id, 10);  // Make sure the ID is an integer
-    console.log('Received requestId:', requestId);  // Check received request ID
+//admin review
+app.post('/api/financial-aid-requests/review/:requestId', async (req, res) => {
+    const { requestId } = req.params;
+    try {
+        const query = `
+            UPDATE financial_aid_requests 
+            SET review_date = NOW() 
+            WHERE request_id = ?`;
+        const [result] = await db.execute(query, [requestId]);
 
-    const query = `
-        SELECT * 
-        FROM financial_aid_requests 
-        WHERE request_id = ?;
-    `;
-    console.log('Executing query:', query, 'with parameters:', [requestId]);  // Log the query
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: 'Request not found' });
+        }
 
-    const [rows] = await db.execute(query, [requestId]);
-    console.log('Query result:', rows);  // Log the result from the query
-
-    if (rows.length > 0) {
-        res.json(rows[0]);
-    } else {
-        res.status(404).json({ message: 'Request not found' });
+        res.json({ message: 'Review date updated successfully' });
+    } catch (error) {
+        console.error('Error updating review date:', error);
+        res.status(500).json({ error: 'Database error' });
     }
 });
 
 
+// Get specific financial aid request details by ID
+app.get('/admin/get-request-details/:requestId', async (req, res) => {
+    const { requestId } = req.params;
 
+    try {
+        const query = 'SELECT * FROM financial_aid_requests WHERE request_id = ?';
+        const [rows] = await db.execute(query, [requestId]);
+
+        if (rows.length === 0) {
+            return res.status(404).json({ message: 'Request not found' });
+        }
+
+        res.json(rows[0]); // Return the first matching row
+    } catch (error) {
+        console.error('Error fetching request details:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
 
 //admin to see book donations
 app.get('/api/admin/book-donations', async (req, res) => {
@@ -353,6 +396,61 @@ app.get('/api/getSponsors', async (req, res) => {
 
 
 //-----Sponsor API Endpoints-----
+//sponsors loogin
+async function generateHash() {
+    const password = '1111';
+    const saltRounds = 10;  // Number of rounds for bcrypt
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    console.log('Generated Hash for 1111:', hashedPassword);
+}
+
+generateHash();
+
+app.post('/sponsor/login', async (req, res) => {
+    const { username, password } = req.body;
+    console.log('Received username:', username);
+    console.log('Received password:', password);
+    console.log('Received password length:', password.length);
+
+    try {
+        // Query the database to get the sponsor information
+        const [rows] = await db.query('SELECT * FROM sponsors WHERE LOWER(email) = LOWER(?)', [username]);
+        console.log('Query result:', rows);
+
+        // If no rows are found, return "Invalid username"
+        if (rows.length === 0) {
+            return res.status(401).json({ error: 'Invalid username' });
+        }
+
+        // Get the sponsor object from the result
+        const sponsor = rows[0];
+        console.log('Stored hashed password:', sponsor.password);
+
+        // Move this log after sponsor is defined
+        console.log('Stored hash length:', sponsor.password.trim().length);
+
+        // Compare the received password with the stored hashed password
+        const match = await bcrypt.compare(password.trim(), sponsor.password.trim());  // Trim both values to remove any extra spaces
+        console.log('Password match result after trim:', match);
+
+        // If the password doesn't match, return "Invalid password"
+        if (!match) {
+            return res.status(401).json({ error: 'Invalid password' });
+        }
+
+        // If username and password match, store sponsor info in session
+        req.session.sponsor = sponsor;  // Store sponsor details in session
+
+        // Redirect to Sponsor Dashboard after successful login
+        return res.redirect('/sponsor/Sponsor-dashboard');  // Redirect to the sponsor dashboard page
+    } catch (error) {
+        console.error('Error during login:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+
+
 //<Sponsors panel(1.View-Book-Requests)
 // Endpoint to fetch all financial aid requests for sponsors
 app.get('/sponsor/financial-aid-requests', async (req, res) => {
@@ -579,52 +677,7 @@ app.get('/sponsor/dashboard/:id', async (req, res) => {
     });
 });
 
-// Admin Route to View Book Requests
-// Backend route to fetch book aid requests
-app.get('/admin/Book-Aid-Request', (req, res) => {
-    const query = 'SELECT * FROM faba_project.book_aid_requests';
-    connection.query(query, (err, results) => {
-        if (err) {
-            console.error('Error:', err);
-            return res.status(500).send('Database error');
-        }
-        console.log('DB Results:', results);  // Check if data is fetched
-        res.json(results);
-    });
-});
 
-
-
-// Approve a request
-app.post('/admin/approve-request/:id', (req, res) => {
-    const id = req.params.id;  // Retrieve the request ID from the URL parameter
-    const query = 'UPDATE book_aid_requests SET status = "Approved" WHERE id = ?';
-
-    connection.query(query, [id], (err, result) => {
-        if (err) {
-            console.error('Error approving request:', err);
-            return res.status(500).send('Error approving request');
-        }
-        res.json({ message: 'Request approved' });  // Send success response
-    });
-});
-
-
-// Reject a request
-app.post('/admin/reject-request/:id', (req, res) => {
-    const id = req.params.id;
-    const query = 'UPDATE book_aid_requests SET status = "Rejected" WHERE id = ?';
-    connection.query(query, [id], (err, result) => {
-        if (err) {
-            console.error('Error rejecting request:', err);
-            return res.status(500).send('Error rejecting request');
-        }
-        res.json({ message: 'Request rejected' }); // Send success response
-    });
-});
-
-
-  
 // Root Route
 app.get('/', (req, res) => {
     res.send('<h1>Welcome to FABA</h1><p>Use /student, /admin, or /sponsor to navigate.</p>');
