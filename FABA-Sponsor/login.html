@@ -149,14 +149,14 @@
     <div class="login-card">
         <h2>Welcome, Sponsors</h2>
         <p>Please log in to access your dashboard.</p>
-        <form action="/sponsor/login" method="POST">
+        <form id="loginForm" action="/sponsor/login" method="POST">
             <div class="form-group">
                 <i class="fas fa-user"></i>
-                <input type="text" name="username" placeholder="Username" required>
+                <input type="text" id="username" name="username" placeholder="Username" required>
             </div>
             <div class="form-group">
                 <i class="fas fa-lock"></i>
-                <input type="password" name="password" placeholder="Password" required>
+                <input type="password" id="password" name="password" placeholder="Password" required>
             </div>
             <div class="options">
                 <label>
@@ -165,6 +165,7 @@
                 <a href="#">Forgot Password?</a>
             </div>
             <button class="login-btn" type="submit">SIGN IN</button>
+            <div id="error-message" style="color: red; font-size: 14px; margin-top: 10px;"></div>
         </form>
         <p class="footer-text">Don’t have an account? <a href="#">Sign Up</a></p>
         <div class="brand-footer">Powered by [faba]</div>
@@ -175,7 +176,16 @@
     
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
-    
+            const loginButton = document.querySelector('.login-btn');
+            const errorMessage = document.getElementById('error-message');
+
+            // Clear any previous error messages
+            errorMessage.textContent = '';
+
+            // Provide feedback during login attempt
+            loginButton.textContent = 'Signing In...';
+            loginButton.disabled = true;
+
             try {
                 const response = await fetch('/sponsor/login', {
                     method: 'POST',
@@ -186,21 +196,16 @@
                 const result = await response.json();
     
                 if (response.ok) {
-                    // Redirect to the Sponsor Dashboard on success
-                    window.location.href = result.redirectUrl;
+                    window.location.href = result.redirectUrl; // Redirect on success
                 } else {
-                    // Check the error message and display the correct alert
-                    if (result.error === 'Invalid username') {
-                        alert('The username you entered is incorrect. Please try again.');
-                    } else if (result.error === 'Invalid password') {
-                        alert('The password you entered is incorrect. Please try again.');
-                    } else {
-                        alert(result.error);
-                    }
+                    errorMessage.textContent = result.error || 'An error occurred. Please try again.';
                 }
             } catch (error) {
                 console.error('Error during login:', error);
-                alert('An unexpected error occurred. Please try again.');
+                errorMessage.textContent = 'An unexpected error occurred. Please try again.';
+            } finally {
+                loginButton.textContent = 'SIGN IN';
+                loginButton.disabled = false;
             }
         });
     </script>          
