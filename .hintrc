@@ -6,6 +6,12 @@
     "no-inline-styles": "off",
     "axe/aria": "off",
     "axe/name-role-value": "off",
-    "axe/structure": "off"
+    "axe/structure": "off",
+    "axe/forms": [
+      "default",
+      {
+        "label": "off"
+      }
+    ]
   }
 }

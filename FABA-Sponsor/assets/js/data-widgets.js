@@ -684,7 +684,7 @@ $(function () {
     var options = {
         series: [{
             name: "Sales",
-            data: [20, 5, 60, 10, 30, 20, 25, 15, 31]
+            data: [0, 5, 60, 10, 30, 20, 25, 15, 31]
         },
         {
             name: "Views",

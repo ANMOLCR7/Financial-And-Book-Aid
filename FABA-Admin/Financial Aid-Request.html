@@ -28,6 +28,7 @@
   <link href="sass/main.css" rel="stylesheet">
   <link href="sass/bordered-theme.css" rel="stylesheet">
   <link href="sass/responsive.css" rel="stylesheet">
+  <link href="sass/Admin.css" rel="stylesheet">
 
 </head>
 
@@ -36,177 +37,38 @@
 
 <!--start header-->
 <header class="top-header">
-  <nav class="navbar navbar-expand align-items-center gap-4">
-    <div class="btn-toggle">
-      <a href="javascript:;"><i class="material-icons-outlined">menu</i></a>
-    </div>
-    <div class="search-bar flex-grow-1">
-      <div class="position-relative">
-        <input class="form-control rounded-5 px-5 search-control d-lg-block d-none" type="text" placeholder="Search">
-        <span class="material-icons-outlined position-absolute d-lg-block d-none ms-3 translate-middle-y start-0 top-50">search</span>
-        <span class="material-icons-outlined position-absolute me-3 translate-middle-y end-0 top-50 search-close">close</span>
-        <div class="search-popup p-3">
-          <div class="card rounded-4 overflow-hidden">
-            <div class="card-header d-lg-none">
-              <div class="position-relative">
-                <input class="form-control rounded-5 px-5 mobile-search-control" type="text" placeholder="Search">
-                <span class="material-icons-outlined position-absolute ms-3 translate-middle-y start-0 top-50">search</span>
-                <span class="material-icons-outlined position-absolute me-3 translate-middle-y end-0 top-50 mobile-search-close">close</span>
-               </div>
-            </div>
-            <div class="card-body search-content">
-              <p class="search-title">Recent Searches</p>
-              <div class="d-flex align-items-start flex-wrap gap-2 kewords-wrapper">
-                <a href="javascript:;" class="kewords"><span>Angular Template</span><i
-                    class="material-icons-outlined fs-6">search</i></a>
-                <a href="javascript:;" class="kewords"><span>Dashboard</span><i
-                    class="material-icons-outlined fs-6">search</i></a>
-                <a href="javascript:;" class="kewords"><span>Admin Template</span><i
-                    class="material-icons-outlined fs-6">search</i></a>
-                <a href="javascript:;" class="kewords"><span>Bootstrap 5 Admin</span><i
-                    class="material-icons-outlined fs-6">search</i></a>
-                <a href="javascript:;" class="kewords"><span>Html eCommerce</span><i
-                    class="material-icons-outlined fs-6">search</i></a>
-                <a href="javascript:;" class="kewords"><span>Sass</span><i
-                    class="material-icons-outlined fs-6">search</i></a>
-                <a href="javascript:;" class="kewords"><span>laravel 9</span><i
-                    class="material-icons-outlined fs-6">search</i></a>
-              </div>
-              <hr>
-              <p class="search-title">Tutorials</p>
-              <div class="search-list d-flex flex-column gap-2">
-                <div class="search-list-item d-flex align-items-center gap-3">
-                  <div class="list-icon">
-                    <i class="material-icons-outlined fs-5">play_circle</i>
-                  </div>
-                  <div class="">
-                    <h5 class="mb-0 search-list-title ">Wordpress Tutorials</h5>
-                  </div>
-                </div>
-                <div class="search-list-item d-flex align-items-center gap-3">
-                  <div class="list-icon">
-                    <i class="material-icons-outlined fs-5">shopping_basket</i>
-                  </div>
-                  <div class="">
-                    <h5 class="mb-0 search-list-title">eCommerce Website Tutorials</h5>
-                  </div>
-                </div>
-
-                <div class="search-list-item d-flex align-items-center gap-3">
-                  <div class="list-icon">
-                    <i class="material-icons-outlined fs-5">laptop</i>
-                  </div>
-                  <div class="">
-                    <h5 class="mb-0 search-list-title">Responsive Design</h5>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="card-footer text-center bg-transparent">
-              <a href="javascript:;" class="btn w-100">See All Search Results</a>
-            </div>
-          </div>
-        </div>
+  <nav class="navbar navbar-expand-lg">
+    <div class="container-fluid d-flex justify-content-between">
+      <!-- Left Section -->
+      <div class="btn-toggle">
+        <a href="javascript:;"><i class="material-icons-outlined">menu</i></a>
       </div>
-    </div>
-    <ul class="navbar-nav gap-1 nav-right-links align-items-center">
-      <li class="nav-item d-lg-none mobile-search-btn">
-        <a class="nav-link" href="javascript:;"><i class="material-icons-outlined">search</i></a>
-      </li>
 
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle dropdown-toggle-nocaret position-relative" data-bs-auto-close="outside"
-          data-bs-toggle="dropdown" href="javascript:;"><i class="material-icons-outlined">notifications</i>
-          <span class="badge-notify">5</span>
-        </a>
-        <div class="dropdown-menu dropdown-notify dropdown-menu-end shadow">
-          <div class="px-3 py-1 d-flex align-items-center justify-content-between border-bottom">
-            <h5 class="notiy-title mb-0">Notifications</h5>
-            <div class="dropdown">
-              <button class="btn btn-secondary dropdown-toggle dropdown-toggle-nocaret option" type="button"
-                data-bs-toggle="dropdown" aria-expanded="false">
-                <span class="material-icons-outlined">
-                  more_vert
-                </span>
-              </button>
-              <div class="dropdown-menu dropdown-option dropdown-menu-end shadow">
-                <div><a class="dropdown-item d-flex align-items-center gap-2 py-2" href="javascript:;"><i
-                      class="material-icons-outlined fs-6">inventory_2</i>Archive All</a></div>
-                <div><a class="dropdown-item d-flex align-items-center gap-2 py-2" href="javascript:;"><i
-                      class="material-icons-outlined fs-6">done_all</i>Mark all as read</a></div>
-                <div><a class="dropdown-item d-flex align-items-center gap-2 py-2" href="javascript:;"><i
-                      class="material-icons-outlined fs-6">mic_off</i>Disable Notifications</a></div>
-                <div><a class="dropdown-item d-flex align-items-center gap-2 py-2" href="javascript:;"><i
-                      class="material-icons-outlined fs-6">grade</i>What's new ?</a></div>
-                <div>
-                  <hr class="dropdown-divider">
-                </div>
-                <div><a class="dropdown-item d-flex align-items-center gap-2 py-2" href="javascript:;"><i
-                      class="material-icons-outlined fs-6">leaderboard</i>Reports</a></div>
-              </div>
-            </div>
-          </div>
-          <div class="notify-list">
-            <div>
-              <a class="dropdown-item border-bottom py-2" href="javascript:;">
-                <div class="d-flex align-items-center gap-3">
-                  <div class="user-wrapper bg-primary text-primary bg-opacity-10">
-                    <span>RS</span>
-                  </div>
-                  <div class="">
-                    <h5 class="notify-title">New Account Created</h5>
-                    <p class="mb-0 notify-desc">New user has registered.</p>
-                    <p class="mb-0 notify-time">Yesterday</p>
-                  </div>
-                  <div class="notify-close position-absolute end-0 me-3">
-                    <i class="material-icons-outlined fs-6">close</i>
-                  </div>
-                </div>
-              </a>
-            </div>
-            <div>
-              <a class="dropdown-item py-2" href="javascript:;">
-                <div class="d-flex align-items-center gap-3">
-                  <div class="user-wrapper bg-danger text-danger bg-opacity-10">
-                    <span>PK</span>
-                  </div>
-                  <div class="">
-                    <h5 class="notify-title">New Account Created</h5>
-                    <p class="mb-0 notify-desc">New user has registered.</p>
-                    <p class="mb-0 notify-time">Today</p>
-                  </div>
-                  <div class="notify-close position-absolute end-0 me-3">
-                    <i class="material-icons-outlined fs-6">close</i>
-                  </div>
-                </div>
-              </a>
-            </div>
-          </div>
-        </div>
-      </li>
-      <li class="nav-item dropdown">
-        <a href="javascript:;" class="dropdown-toggle dropdown-toggle-nocaret" data-bs-toggle="dropdown" aria-label="User Menu">
-          <img src="assets/images/avatars/11.png" class="rounded-circle p-1 border" width="45" height="45" alt="User Avatar">
-        </a>
-        <div class="dropdown-menu dropdown-user dropdown-menu-end shadow">
-          <a class="dropdown-item gap-2 py-2" href="javascript:;">
-            <div class="text-center">
-              <img src="assets/images/avatars/11.png" class="rounded-circle p-1 shadow mb-3" width="90" height="90" alt="User Avatar">
-              <h5 class="user-name mb-0 fw-bold">Hello, Jhon</h5>
-            </div>
+      <!-- Right Section -->
+      <ul class="navbar-nav gap-1 nav-right-links align-items-center ms-auto">
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle dropdown-toggle-nocaret" href="javascript:;" data-bs-toggle="dropdown">
+            <img src="assets/images/county/08.png" width="22" alt="">
           </a>
-          <hr class="dropdown-divider">
-          <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="javascript:;"><i class="material-icons-outlined">person_outline</i>Profile</a>
-          <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="javascript:;"><i class="material-icons-outlined">local_bar</i>Setting</a>
-          <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="javascript:;"><i class="material-icons-outlined">dashboard</i>Dashboard</a>
-          <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="javascript:;"><i class="material-icons-outlined">account_balance</i>Earning</a>
-          <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="javascript:;"><i class="material-icons-outlined">cloud_download</i>Downloads</a>
-          <hr class="dropdown-divider">
-          <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="javascript:;"><i class="material-icons-outlined">power_settings_new</i>Logout</a>
-        </div>
-      </li>
-    </ul>
+        </li>
 
+        
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle dropdown-toggle-nocaret position-relative" 
+             data-bs-auto-close="outside"
+             data-bs-toggle="dropdown" href="javascript:;">
+            <i class="material-icons-outlined">notifications</i>
+            <span class="badge-notify" style="display:none;">0</span>
+          </a>
+          <div class="dropdown-menu dropdown-notify dropdown-menu-end shadow">
+            <div class="px-3 py-1 d-flex align-items-center justify-content-between border-bottom">
+              <h5 class="notiy-title mb-0">Notifications</h5>
+            </div>
+            <div class="notify-list"></div>
+          </div>
+        </li>
+      </ul>
+    </div>
   </nav>
 </header>
 <!--end top header-->
@@ -257,7 +119,7 @@
                                 <th>Student ID</th>
                                 <th>Name</th>
                                 <th>Amount Requested</th>
-                                <th>Purpose</th>
+                                <th>Prn No</th>
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
@@ -270,7 +132,7 @@
                                 <th>Student ID</th>
                                 <th>Name</th>
                                 <th>Amount Requested</th>
-                                <th>Purpose</th>
+                                <th>Prn No</th>
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
@@ -294,7 +156,7 @@
                         <p><strong>Phone:</strong> <span id="modal-phone"></span></p>
                         <p><strong>Email:</strong> <span id="modal-email"></span></p>
                         <p><strong>Amount Requested:</strong> ₹<span id="modal-amount-requested"></span></p>
-                        <p><strong>Purpose:</strong> <span id="modal-purpose"></span></p>
+                        <p><strong>Prn No:</strong> <span id="modal-prn-no"></span></p>
                         <p><strong>Bank Account Number:</strong> <span id="modal-bank-account-number"></span></p>
                         <p><strong>IFSC Code:</strong> <span id="modal-ifsc-code"></span></p>
                         <p><strong>University Name:</strong> <span id="modal-university-name"></span></p>
@@ -323,7 +185,7 @@ fetch('/api/financial-aid-requests') // Update API endpoint as needed
                 <td>${request.student_id}</td>
                 <td>${request.first_name} ${request.last_name}</td>
                 <td>₹${request.amount_requested}</td>
-                <td>${request.purposes}</td>
+                <td>${request.prn_no}</td>
                 <td>${request.status}</td>
                 <td>
                     <button class="btn btn-primary btn-sm" onclick="viewDetails(${request.request_id})">Details</button>
@@ -366,7 +228,7 @@ function viewDetails(requestId) {
             document.getElementById('modal-phone').textContent = data.phone || 'N/A';
             document.getElementById('modal-email').textContent = data.email || 'N/A';
             document.getElementById('modal-amount-requested').textContent = data.amount_requested || '0.00';
-            document.getElementById('modal-purpose').textContent = data.purposes || 'N/A';
+            document.getElementById('modal-prn-no').textContent = data.prn_no || 'N/A';
             document.getElementById('modal-bank-account-number').textContent = data.bank_account_no || 'N/A';
             document.getElementById('modal-ifsc-code').textContent = data.ifsc_code || 'N/A';
             document.getElementById('modal-university-name').textContent = data.university || 'N/A';
@@ -417,6 +279,7 @@ function viewDetails(requestId) {
   <script src="assets/plugins/metismenu/metisMenu.min.js"></script>
   <script src="assets/plugins/datatable/js/jquery.dataTables.min.js"></script>
 	<script src="assets/plugins/datatable/js/dataTables.bootstrap5.min.js"></script>
+  <script src="assets/js/admin-header.js"></script>
 	<script>
 		$(document).ready(function() {
 			$('#example').DataTable();

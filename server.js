@@ -6,6 +6,11 @@ const bcrypt = require('bcrypt');
 const app = express();
 const PORT = 3000;
 const session = require('express-session');
+const nodemailer = require("nodemailer");
+const jwt = require("jsonwebtoken");
+const crypto = require('crypto');
+require("dotenv").config();
+
 
 // Set up session middleware
 app.use(session({
@@ -53,21 +58,21 @@ app.post('/submit-financial-aid', async (req, res) => {
     try {
         const {
             firstName, lastName, phoneNumber, emailAddress, aidAmount, address,
-            studentId, purpose, // Ensure these fields exist in your database
+            studentId, prnNo, // Ensure these fields exist in your database
             username, accountEmail, bankAccountNumber, ifscCode, universityName, 
             courseName, currentYearSelect, boardName, jrFyPercentage, jrSyPercentage,
             semester1, semester2, semester3, semester4
         } = req.body;
 
         // Validate required fields
-        if (!firstName || !lastName || !emailAddress || !bankAccountNumber || !ifscCode || !purpose) {
-            return res.status(400).send('Missing required fields: first name, last name, email, bank account number, IFSC code, and purpose are required.');
+        if (!firstName || !lastName || !emailAddress || !bankAccountNumber || !ifscCode || !prnNo) {
+            return res.status(400).send('Missing required fields: first name, last name, email, bank account number, IFSC code, and Prn No are required.');
         }
 
         // SQL Query to insert data
         const query = `
             INSERT INTO financial_aid_requests 
-            (first_name, last_name, phone, email, amount_requested, address, student_id, purposes, username, account_email, 
+            (first_name, last_name, phone, email, amount_requested, address, student_id, prn_no, username, account_email, 
             bank_account_no, ifsc_code, university, course, year, board, jr_fy, jr_sy, sem1, sem2, sem3, sem4)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)
         `;
@@ -76,7 +81,7 @@ app.post('/submit-financial-aid', async (req, res) => {
         const values = [
             firstName, lastName, phoneNumber, emailAddress, 
             parseFloat(aidAmount) || null, // Ensure it's a number or null
-            address, studentId, purpose, username, accountEmail, bankAccountNumber, ifscCode, universityName, 
+            address, studentId, prnNo, username, accountEmail, bankAccountNumber, ifscCode, universityName, 
             courseName, currentYearSelect, boardName, 
             parseFloat(jrFyPercentage) || null,
             parseFloat(jrSyPercentage) || null,
@@ -177,7 +182,7 @@ app.get('/api/book-donations', async (req, res) => {
 });
 
  //Admin Panel  
-//Admin dashboard
+//(1.Admin dashboard)
 // API to fetch total students count
 app.get('/api/total-students', async (req, res) => {
     try {
@@ -278,7 +283,7 @@ app.get('/api/financial-aid-requests', async (req, res) => {
     try {
         const query = `
             SELECT request_id, student_id, first_name, last_name, amount_requested, 
-                   purposes, bank_account_no, ifsc_code, university, course, year, board, status, submission_date, review_date 
+                   prn_no, bank_account_no, ifsc_code, university, course, year, board, status, submission_date, review_date 
             FROM financial_aid_requests;
         `;
         const [rows] = await db.execute(query);
@@ -406,6 +411,16 @@ async function generateHash() {
 
 generateHash();
 
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: 'your-email@gmail.com', // ✅ Replace with your Gmail
+        pass: 'your-app-password' // ✅ Use an App Password, NOT your Gmail password!
+    }
+});
+
+require("dotenv").config();
+
 app.post('/sponsor/login', async (req, res) => {
     const { username, password } = req.body;
     console.log('Received username:', username);
@@ -442,6 +457,74 @@ app.post('/sponsor/login', async (req, res) => {
     }
 });
 
+// ✅ Sponsor Sign Up Route
+app.post('/sponsor/signup', async (req, res) => {
+    const { first_name, last_name, email, password, phone } = req.body;
+
+    if (!first_name || !last_name || !email || !password) {
+        return res.status(400).json({ message: "All required fields must be filled." });
+    }
+
+    try {
+        // ✅ Check if sponsor already exists
+        const [existingSponsor] = await db.query("SELECT email FROM sponsors WHERE email = ?", [email]);
+
+        if (existingSponsor.length > 0) {
+            return res.status(400).json({ message: "Email already registered. Try logging in." });
+        }
+
+        // ✅ Hash password
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // ✅ Insert into Database
+        await db.query(
+            `INSERT INTO sponsors (first_name, last_name, email, phone, password, status) 
+             VALUES (?, ?, ?, ?, ?, 'Active')`,
+            [first_name, last_name, email, phone || 'Not Provided', hashedPassword]
+        );
+
+        res.status(201).json({ message: "Registration successful! Redirecting..." });
+
+    } catch (error) {
+        console.error("Signup error:", error);
+        res.status(500).json({ message: "Server error. Please try again later." });
+    }
+});
+
+// Forgot Password Route
+app.post('/sponsor/forgot-password', async (req, res) => {
+    const { email } = req.body;
+
+    if (!email) {
+        return res.status(400).json({ message: "Please enter your email." });
+    }
+
+    try {
+        // ✅ Check if email exists
+        const [rows] = await db.query("SELECT sponsor_id FROM sponsors WHERE email = ?", [email]);
+
+        if (rows.length === 0) {
+            return res.status(404).json({ message: "Email not found. Please check and try again." });
+        }
+
+        // ✅ Generate a reset token
+        const resetToken = crypto.randomBytes(32).toString('hex');
+        const resetLink = `http://localhost:${PORT}/reset-password/${resetToken}`;
+
+        // ✅ Store reset token in DB (Optional: If implementing password reset feature)
+
+        console.log(`Password reset link (for testing): ${resetLink}`);
+
+        // ✅ Send success response
+        res.status(200).json({ message: "Password reset link sent to your email." });
+
+    } catch (error) {
+        console.error("Forgot Password error:", error);
+        res.status(500).json({ message: "Server error. Please try again later." });
+    }
+});
+
+
 //Sponsor panel(1.dashboard)
 //dashboard sponsors details
 app.get('/sponsor/dashboard', (req, res) => {
@@ -475,49 +558,54 @@ app.get('/api/financial-aid-requests-by-year', async (req, res) => {
 
 // API to fetch aid statistics sponsors dashboard
 // Assuming you have express-session middleware set up
-app.get('/aid-stats', (req, res) => {
+app.get('/api/sponsor/aid-stats', async (req, res) => {
     if (!req.session || !req.session.sponsor) {
-        console.log('Unauthorized access attempt');
-        return res.status(401).json({ error: 'Unauthorized' });
+      return res.status(401).json({ error: 'Unauthorized. Please log in.' });
     }
-
+  
     const sponsorId = req.session.sponsor.sponsor_id;
-    console.log('Sponsor Id:', sponsorId);
-    console.log('Before executing query');
-
-    // Ensure the query is correctly structured
-    const query = `
+  
+    try {
+      // Fetch total contributions and total contributed amount
+      const queryTotal = `
         SELECT 
-            COUNT(contribution_id) AS total_contributions,
-            COALESCE(SUM(contribution_amount), 0) AS total_contributed
+          COUNT(contribution_id) AS total_contributions,
+          COALESCE(SUM(contribution_amount), 0) AS total_contributed
         FROM 
-            financial_contributions
+          financial_contributions
         WHERE 
-            sponsor_id = ?
-    `;
-
-    db.query(query, [sponsorId], (err, results) => {
-        console.log('After executing query');
-
-        if (err) {
-            console.error('Database query error:', err);
-            return res.status(500).json({ error: 'Error fetching statistics' });
-        }
-
-        console.log('Query Results:', results);
-        if (!results || results.length === 0) {
-            console.log('No results found for sponsor.');
-            return res.status(404).json({ error: 'No data found' });
-        }
-
-        // Return the data correctly
-        res.json({
-            total_contributions: results[0].total_contributions || 0,
-            total_contributed: results[0].total_contributed || 0.0
-        });
-    });
-});
-
+          sponsor_id = ?
+      `;
+      const [totalResults] = await db.query(queryTotal, [sponsorId]);
+  
+      // Fetch monthly contribution data
+      const queryMonthly = `
+        SELECT 
+          DATE_FORMAT(contribution_date, '%b %Y') AS month,
+          COUNT(contribution_id) AS total_contributions,
+          COALESCE(SUM(contribution_amount), 0) AS total_contributed
+        FROM 
+          financial_contributions
+        WHERE 
+          sponsor_id = ?
+        GROUP BY 
+          DATE_FORMAT(contribution_date, '%b %Y')
+        ORDER BY 
+          MIN(contribution_date)
+      `;
+      const [monthlyResults] = await db.query(queryMonthly, [sponsorId]);
+  
+      res.json({
+        total_contributions: totalResults[0].total_contributions || 0,
+        total_contributed: totalResults[0].total_contributed || 0.0,
+        monthly_contributions: monthlyResults
+      });
+    } catch (error) {
+      console.error('Error fetching aid statistics:', error.message);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  });
+  
 //<Sponsors panel(2.View-Book-Requests)
 // Endpoint to fetch all financial aid requests for sponsors
 app.get('/sponsor/financial-aid-requests', async (req, res) => {
@@ -553,10 +641,19 @@ app.post('/sponsor/approve-request/:requestId', async (req, res) => {
     }
 });
 
+app.get('/sponsor/get-session', (req, res) => {
+    if (!req.session.sponsor) {
+        return res.status(401).json({ error: 'Not logged in' });
+    }
+    res.json({ sponsorId: req.session.sponsor.sponsor_id });
+});
+
+
 //Sponsors Making contribution
 app.post('/sponsor/contribute/:requestId', async (req, res) => {
     const { requestId } = req.params;
     const { sponsorId, paymentAmount } = req.body;
+    console.log('Sending:', { sponsorId, paymentAmount });
 
     if (!paymentAmount || paymentAmount <= 0) {
         return res.status(400).json({ error: 'Invalid contribution amount' });
@@ -602,127 +699,135 @@ app.get('/sponsor/get-student-bank-details/:studentId', async (req, res) => {
 
 //Sponsors panel(3.Contribute Financially)
 // Endpoint to make a financial contribution
-app.get('/sponsor/financial-requests', async (req, res) => {
+app.get('/sponsor/contributions', async (req, res) => {
+    if (!req.session.sponsor) {
+        return res.status(401).json({ error: 'Not logged in' });
+    }
+
+    const sponsorId = req.session.sponsor.sponsor_id;
+
     try {
         const query = `
             SELECT 
-                request_id, 
-                student_id, 
-                first_name, 
-                last_name, 
-                purposes,
-                amount_requested, 
-                contribution_amount,
-                submission_date 
-            FROM financial_aid_requests
-            WHERE status = 'Approved'
+                fc.contribution_id,
+                fc.request_id,
+                fc.contribution_amount,
+                fc.contribution_date,
+                far.student_id,
+                far.first_name,
+                far.last_name
+            FROM financial_contributions fc
+            JOIN financial_aid_requests far ON fc.request_id = far.request_id
+            WHERE fc.sponsor_id = ?
         `;
-        const [rows] = await db.execute(query);
+        
+        const [rows] = await db.execute(query, [sponsorId]);
         res.json(rows);
     } catch (error) {
-        console.error('Error fetching financial requests:', error);
-        res.status(500).send('Internal Server Error');
+        console.error('Error fetching sponsor contributions:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
-// Endpoint for a sponsor to make a financial contribution
-app.post('/sponsor/contribute/:requestId', async (req, res) => {
-    const { requestId } = req.params;
-    const { sponsorId, amount } = req.body;  // Assuming sponsorId is passed in the request body
-
-    // Validate input
-    if (!amount || amount <= 0) {
-        return res.status(400).json({ error: 'Invalid contribution amount' });
-    }
-
-    try {
-        // Insert the contribution into the financial_contributions table
-        const query = `
-            INSERT INTO financial_contributions (sponsor_id, request_id, amount)
-            VALUES (?, ?, ?)
-        `;
-        const values = [sponsorId, requestId, amount];
-        await db.execute(query, values);
-
-        // Optionally, update the financial aid request's contribution status
-        await db.execute('UPDATE financial_aid_requests SET payment_status = "Contributed" WHERE request_id = ?', [requestId]);
-
-        res.status(200).json({ message: 'Contribution successful' });
-    } catch (error) {
-        console.error('Error making contribution:', error);
-        res.status(500).json({ error: 'Failed to make contribution' });
-    }
-});
 
 //Sponsor panel(4.Profile)
-// Get sponsor data by sponsor ID
-app.get('/getSponsorData', async (req, res) => {
-    const sponsorId = req.query.sponsorId;
-  
-    try {
-      const connection = await mysql.createConnection(dbConfig);  // Use dbConfig for the connection
-      const [rows] = await connection.execute(
-        'SELECT first_name, last_name, email, phone, dob, address FROM sponsors WHERE sponsor_id = ?',
-        [sponsorId]
-      );
-  
-      if (rows.length === 0) {
-        return res.status(404).json({ message: 'Sponsor not found' });
-      }
-  
-      res.json(rows[0]);  // Send the fetched sponsor data
-      connection.end();   // Close the database connection
-    } catch (error) {
-      console.error('Error fetching sponsor data:', error);
-      res.status(500).json({ message: 'Error fetching sponsor data' });
+app.get('/sponsor/profile', async (req, res) => {
+    if (!req.session.sponsor) {
+        return res.status(401).json({ error: 'Unauthorized. Please log in.' });
     }
-  });
-  
-  // Update sponsor profile
-  app.post('/updateSponsorProfile', async (req, res) => {
-    const sponsorId = req.query.sponsorId;
-    const { first_name, last_name, email, phone, dob, address } = req.body;
-  
+
     try {
-      const connection = await mysql.createConnection(dbConfig);
-      const [result] = await connection.execute(
-        'UPDATE sponsors SET first_name = ?, last_name = ?, email = ?, phone = ?, dob = ?, address = ? WHERE sponsor_id = ?',
-        [first_name, last_name, email, phone, dob, address, sponsorId]
-      );
-  
-      if (result.affectedRows === 0) {
-        return res.status(404).json({ message: 'Sponsor not found' });
-      }
-  
-      res.json({ message: 'Profile updated successfully' });
-      connection.end(); // Close the database connection
+        const sponsorId = req.session.sponsor.sponsor_id;
+        const [rows] = await db.query(
+            'SELECT sponsor_id, CONCAT(first_name, " ", last_name) AS full_name, email, profile_picture FROM sponsors WHERE sponsor_id = ?', 
+            [sponsorId]
+        );
+
+        if (rows.length === 0) {
+            return res.status(404).json({ error: 'Sponsor not found' });
+        }
+
+        res.status(200).json(rows[0]);
     } catch (error) {
-      console.error('Error updating sponsor profile:', error);
-      res.status(500).json({ message: 'Error updating sponsor profile' });
-    }
-  });
-
-
-
-//sponsor panel(4.dashboard)
-// Endpoint to fetch sponsor dashboard info (such as total contributions)
-app.get('/sponsor/dashboard/:id', async (req, res) => {
-    const sponsorId = req.params.id;
-    
-    try {
-        // Query to get financial contributions by the sponsor
-        const [financialContributions] = await db.execute('SELECT SUM(amount) AS total_contribution FROM financial_contributions WHERE sponsor_id = ?', [sponsorId]);
-
-        res.json({
-            totalFinancialContributions: financialContributions[0].total_contribution
-        });
-    } catch (error) {
-        console.error('Error fetching sponsor dashboard:', error);
-        res.status(500).json({ error: 'Database error' });
+        console.error('Error fetching sponsor profile:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
+// Get sponsor data by sponsor ID
+// Get sponsor data by sponsor ID
+app.get('/getSponsorData', async (req, res) => {
+    if (!req.session.sponsor) {
+        return res.status(401).json({ message: 'Unauthorized. Please log in.' });
+    }
 
+    const sponsorId = req.session.sponsor.sponsor_id; // Fetch from session
+
+    try {
+        const [rows] = await db.execute(
+            'SELECT sponsor_id, first_name, last_name, email, phone, dob, address FROM sponsors WHERE sponsor_id = ?',
+            [sponsorId]
+        );
+
+        if (rows.length === 0) {
+            return res.status(404).json({ message: 'Sponsor not found' });
+        }
+
+        res.json(rows[0]); // Send the sponsor data
+    } catch (error) {
+        console.error('Error fetching sponsor data:', error);
+        res.status(500).json({ message: 'Error fetching sponsor data' });
+    }
+});
+
+// Update sponsor profile
+app.patch('/updateSponsorProfile', async (req, res) => {
+    if (!req.session.sponsor) {
+        return res.status(401).json({ message: 'Unauthorized. Please log in.' });
+    }
+
+    const sponsorId = req.session.sponsor.sponsor_id; // Fetch from session
+    const { first_name, last_name, email, phone, dob, address } = req.body;
+
+    try {
+        await db.execute(
+            'UPDATE sponsors SET first_name = ?, last_name = ?, email = ?, phone = ?, dob = ?, address = ? WHERE sponsor_id = ?',
+            [first_name, last_name, email, phone, dob, address, sponsorId]
+        );
+
+        res.json({ message: 'Profile updated successfully' });
+    } catch (error) {
+        console.error('Error updating sponsor profile:', error);
+        res.status(500).json({ message: 'Error updating profile' });
+    }
+});
+
+//Sponsor and Admin header
+// 🔔 Fetch Pending Financial Aid Requests
+app.get('/api/financial-aid-requests', async (req, res) => {
+    try {
+      const [rows] = await db.query('SELECT * FROM financial_aid_requests WHERE status = "Pending"');
+      res.json(rows);
+    } catch (error) {
+      console.error('Database error:', error);
+      res.status(500).json({ error: 'Database error' });
+    }
+  });
+  
+// Check for New Requests and Send Notification
+  app.get('/api/new-requests', async (req, res) => {
+    try {
+      const [rows] = await db.query(
+        `SELECT CONCAT(first_name, ' ', last_name) AS student_name, amount_requested 
+         FROM financial_aid_requests WHERE status = "Pending"`
+      );
+      res.json(rows);
+    } catch (error) {
+      console.error('Database error:', error);
+      res.status(500).json({ error: 'Database error' });
+    }
+  });
+  
 // Serve Static Files for Admin, Sponsor, and Student
 ['admin', 'sponsor', 'student'].forEach(role => {
     const rolePath = `FABA-${role.charAt(0).toUpperCase() + role.slice(1)}`;

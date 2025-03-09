@@ -29,193 +29,78 @@
   <link href="sass\main.css" rel="stylesheet">
   <link href="sass\bordered-theme.css" rel="stylesheet">
   <link href="sass\responsive.css" rel="stylesheet">
-  <link href="sass\sponsor-contributions.css" rel="stylesheet">
+  <link href="sass\sponsor.css" rel="stylesheet">
 </head>
 <body>
   <!--start header-->
   <header class="top-header">
-    <nav class="navbar navbar-expand align-items-center gap-4">
-      <div class="btn-toggle">
-        <a href="javascript:;"><i class="material-icons-outlined">menu</i></a>
-      </div>
-      <div class="search-bar flex-grow-1">
-        <div class="position-relative">
-          <input class="form-control rounded-5 px-5 search-control d-lg-block d-none" type="text" placeholder="Search">
-          <span class="material-icons-outlined position-absolute d-lg-block d-none ms-3 translate-middle-y start-0 top-50">search</span>
-          <span class="material-icons-outlined position-absolute me-3 translate-middle-y end-0 top-50 search-close">close</span>
-          <div class="search-popup p-3">
-            <div class="card rounded-4 overflow-hidden">
-              <div class="card-header d-lg-none">
-                <div class="position-relative">
-                  <input class="form-control rounded-5 px-5 mobile-search-control" type="text" placeholder="Search">
-                  <span class="material-icons-outlined position-absolute ms-3 translate-middle-y start-0 top-50">search</span>
-                  <span class="material-icons-outlined position-absolute me-3 translate-middle-y end-0 top-50 mobile-search-close">close</span>
-                 </div>
-              </div>
-              <div class="card-body search-content">
-                <p class="search-title">Recent Searches</p>
-                <div class="d-flex align-items-start flex-wrap gap-2 kewords-wrapper">
-                  <a href="javascript:;" class="kewords"><span>Angular Template</span><i
-                      class="material-icons-outlined fs-6">search</i></a>
-                  <a href="javascript:;" class="kewords"><span>Dashboard</span><i
-                      class="material-icons-outlined fs-6">search</i></a>
-                  <a href="javascript:;" class="kewords"><span>Admin Template</span><i
-                      class="material-icons-outlined fs-6">search</i></a>
-                  <a href="javascript:;" class="kewords"><span>Bootstrap 5 Admin</span><i
-                      class="material-icons-outlined fs-6">search</i></a>
-                  <a href="javascript:;" class="kewords"><span>Html eCommerce</span><i
-                      class="material-icons-outlined fs-6">search</i></a>
-                  <a href="javascript:;" class="kewords"><span>Sass</span><i
-                      class="material-icons-outlined fs-6">search</i></a>
-                  <a href="javascript:;" class="kewords"><span>laravel 9</span><i
-                      class="material-icons-outlined fs-6">search</i></a>
-                </div>
-                <hr>
-                <p class="search-title">Tutorials</p>
-                <div class="search-list d-flex flex-column gap-2">
-                  <div class="search-list-item d-flex align-items-center gap-3">
-                    <div class="list-icon">
-                      <i class="material-icons-outlined fs-5">play_circle</i>
-                    </div>
-                    <div class="">
-                      <h5 class="mb-0 search-list-title ">Wordpress Tutorials</h5>
-                    </div>
-                  </div>
-                  <div class="search-list-item d-flex align-items-center gap-3">
-                    <div class="list-icon">
-                      <i class="material-icons-outlined fs-5">shopping_basket</i>
-                    </div>
-                    <div class="">
-                      <h5 class="mb-0 search-list-title">eCommerce Website Tutorials</h5>
-                    </div>
-                  </div>
-  
-                  <div class="search-list-item d-flex align-items-center gap-3">
-                    <div class="list-icon">
-                      <i class="material-icons-outlined fs-5">laptop</i>
-                    </div>
-                    <div class="">
-                      <h5 class="mb-0 search-list-title">Responsive Design</h5>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="card-footer text-center bg-transparent">
-                <a href="javascript:;" class="btn w-100">See All Search Results</a>
-              </div>
-            </div>
-          </div>
+    <nav class="navbar navbar-expand-lg">
+      <div class="container-fluid d-flex justify-content-between">
+        <!-- Left Section -->
+        <div class="btn-toggle">
+          <a href="javascript:;"><i class="material-icons-outlined">menu</i></a>
         </div>
-      </div>
-      <ul class="navbar-nav gap-1 nav-right-links align-items-center">
-        <li class="nav-item d-lg-none mobile-search-btn">
-          <a class="nav-link" href="javascript:;"><i class="material-icons-outlined">search</i></a>
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle dropdown-toggle-nocaret" href="avascript:;" data-bs-toggle="dropdown"><img src="assets/images/county/08.png" width="22" alt="">
-          </a>
-        </li>
-
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle dropdown-toggle-nocaret position-relative" data-bs-auto-close="outside"
-            data-bs-toggle="dropdown" href="javascript:;"><i class="material-icons-outlined">notifications</i>
-            <span class="badge-notify">5</span>
-          </a>
-          <div class="dropdown-menu dropdown-notify dropdown-menu-end shadow">
-            <div class="px-3 py-1 d-flex align-items-center justify-content-between border-bottom">
-              <h5 class="notiy-title mb-0">Notifications</h5>
-              <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle dropdown-toggle-nocaret option" type="button"
-                  data-bs-toggle="dropdown" aria-expanded="false">
-                  <span class="material-icons-outlined">
-                    more_vert
-                  </span>
-                </button>
-                <div class="dropdown-menu dropdown-option dropdown-menu-end shadow">
-                  <div><a class="dropdown-item d-flex align-items-center gap-2 py-2" href="javascript:;"><i
-                        class="material-icons-outlined fs-6">inventory_2</i>Archive All</a></div>
-                  <div><a class="dropdown-item d-flex align-items-center gap-2 py-2" href="javascript:;"><i
-                        class="material-icons-outlined fs-6">done_all</i>Mark all as read</a></div>
-                  <div><a class="dropdown-item d-flex align-items-center gap-2 py-2" href="javascript:;"><i
-                        class="material-icons-outlined fs-6">mic_off</i>Disable Notifications</a></div>
-                  <div><a class="dropdown-item d-flex align-items-center gap-2 py-2" href="javascript:;"><i
-                        class="material-icons-outlined fs-6">grade</i>What's new ?</a></div>
-                  <div>
-                    <hr class="dropdown-divider">
-                  </div>
-                  <div><a class="dropdown-item d-flex align-items-center gap-2 py-2" href="javascript:;"><i
-                        class="material-icons-outlined fs-6">leaderboard</i>Reports</a></div>
-                </div>
-              </div>
-            </div>
-            <div class="notify-list">
-              <div>
-                <a class="dropdown-item border-bottom py-2" href="javascript:;">
-                  <div class="d-flex align-items-center gap-3">
-                    <div class="user-wrapper bg-primary text-primary bg-opacity-10">
-                      <span>RS</span>
-                    </div>
-                    <div class="">
-                      <h5 class="notify-title">New Account Created</h5>
-                      <p class="mb-0 notify-desc">New user has registered.</p>
-                      <p class="mb-0 notify-time">Yesterday</p>
-                    </div>
-                    <div class="notify-close position-absolute end-0 me-3">
-                      <i class="material-icons-outlined fs-6">close</i>
-                    </div>
-                  </div>
-                </a>
-              </div>
-              <div>
-                <a class="dropdown-item py-2" href="javascript:;">
-                  <div class="d-flex align-items-center gap-3">
-                    <div class="user-wrapper bg-danger text-danger bg-opacity-10">
-                      <span>PK</span>
-                    </div>
-                    <div class="">
-                      <h5 class="notify-title">New Account Created</h5>
-                      <p class="mb-0 notify-desc">New user has registered.</p>
-                      <p class="mb-0 notify-time">Today</p>
-                    </div>
-                    <div class="notify-close position-absolute end-0 me-3">
-                      <i class="material-icons-outlined fs-6">close</i>
-                    </div>
-                  </div>
-                </a>
-              </div>
-            </div>
-          </div>
-        </li>
-        <li class="nav-item dropdown">
-          <a href="javascrpt:;" class="dropdown-toggle dropdown-toggle-nocaret" data-bs-toggle="dropdown">
-             <img src="assets\images\avatars\11.png" class="rounded-circle p-1 border" width="45" height="45" alt="">
-          </a>
-          <div class="dropdown-menu dropdown-user dropdown-menu-end shadow">
-            <a class="dropdown-item  gap-2 py-2" href="javascript:;">
-              <div class="text-center">
-                <img src="assets\images\avatars\11.png" class="rounded-circle p-1 shadow mb-3" width="90" height="90"
-                  alt="">
-                <h5 class="user-name mb-0 fw-bold">Hello, Jhon</h5>
-              </div>
+  
+        <!-- Right Section -->
+        <ul class="navbar-nav gap-1 nav-right-links align-items-center ms-auto">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle dropdown-toggle-nocaret" href="javascript:;" data-bs-toggle="dropdown">
+              <img src="assets/images/county/08.png" width="22" alt="">
             </a>
-            <hr class="dropdown-divider">
-            <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="javascript:;"><i
-              class="material-icons-outlined">person_outline</i>Profile</a>
-            <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="javascript:;"><i
-              class="material-icons-outlined">local_bar</i>Setting</a>
-            <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="javascript:;"><i
-              class="material-icons-outlined">dashboard</i>Dashboard</a>
-            <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="javascript:;"><i
-              class="material-icons-outlined">account_balance</i>Earning</a>
-              <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="javascript:;"><i
-                class="material-icons-outlined">cloud_download</i>Downloads</a>
-            <hr class="dropdown-divider">
-            <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="javascript:;"><i
-            class="material-icons-outlined">power_settings_new</i>Logout</a>
-          </div>
-        </li>
-      </ul>
-
+          </li>
+  
+          
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle dropdown-toggle-nocaret position-relative" 
+               data-bs-auto-close="outside"
+               data-bs-toggle="dropdown" href="javascript:;">
+              <i class="material-icons-outlined">notifications</i>
+              <span class="badge-notify" style="display:none;">0</span>
+            </a>
+            <div class="dropdown-menu dropdown-notify dropdown-menu-end shadow">
+              <div class="px-3 py-1 d-flex align-items-center justify-content-between border-bottom">
+                <h5 class="notiy-title mb-0">Notifications</h5>
+              </div>
+              <div class="notify-list"></div>
+            </div>
+          </li>
+          
+          
+  
+          <li class="nav-item dropdown">
+            <a href="javascript:;" class="dropdown-toggle dropdown-toggle-nocaret" data-bs-toggle="dropdown">
+              <img id="sponsorAvatar" src="assets/images/avatars/11.png" class="rounded-circle p-1 border" width="45"
+                height="45" alt="">
+            </a>
+            <div class="dropdown-menu dropdown-user dropdown-menu-end shadow">
+              <a class="dropdown-item gap-2 py-2" href="javascript:;">
+                <div class="text-center">
+                  <img id="sponsorAvatarDropdown" src="assets/images/avatars/11.png" class="rounded-circle p-1 shadow mb-3"
+                    width="90" height="90" alt="">
+                  <h5 id="sponsorName" class="user-name mb-0 fw-bold">Hello, Jhon</h5>
+                </div>
+              </a>
+              <hr class="dropdown-divider">
+            
+              <!-- Combined Navigation Links -->
+              <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="/sponsor/Sponsor-profile"><i
+                  class="material-icons-outlined">person_outline</i>Profile</a>
+              <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="/sponsor/Sponsor-dashboard"><i
+                  class="material-icons-outlined">dashboard</i>Home</a>
+              <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="/sponsor/Sponsor-view-requests"><i
+                  class="material-icons-outlined">arrow_right</i>View Requests</a>
+              <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="/sponsor/Sponsor-contributions"><i
+                  class="material-icons-outlined">account_balance</i>Contributions</a>
+              <hr class="dropdown-divider">
+            
+              <!-- Logout with Redirect to Login -->
+              <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="/sponsor/login" onclick="logoutUser()">
+                <i class="material-icons-outlined">power_settings_new</i>Logout
+              </a>
+            </div>          
+          </li>
+        </ul>
+      </div>
     </nav>
   </header>
   <!--end top header-->
@@ -252,24 +137,47 @@
   <!--start main wrapper-->
   <main class="main-wrapper">
     <div class="main-content">
-        <div class="card rounded-4">
-            <div class="card-body p-4">
-                <div class="position-relative mb-5">
-                    <img src="assets/images/gallery/profile-cover.html" class="img-fluid rounded-4 shadow" alt="">
-                    <div class="profile-avatar position-absolute top-100 start-50 translate-middle">
-                        <img src="assets/images/avatars/11.png" class="img-fluid rounded-circle p-1 bg-grd-danger shadow" width="170" height="170" alt="">
-                    </div>
+      <div class="card rounded-4">
+        <div class="card-body p-4">
+            <div class="position-relative mb-5">
+                <img src="assets/images/gallery/profile-cover.jpg" class="img-fluid rounded-4 shadow" alt="Profile Cover">
+                <div class="profile-avatar position-absolute top-100 start-50 translate-middle">
+                    <img id="sponsorAvatar" src="assets/images/avatars/default.png" class="img-fluid rounded-circle p-1 bg-grd-danger shadow" width="170" height="170" alt="Profile Avatar">
                 </div>
-                <div class="profile-info pt-5 d-flex align-items-center justify-content-between">
-                    <div>
-                        <h3 id="sponsorName">Jhon Doe</h3>
-                        <p class="mb-0">Sponsor</p>
-                    </div>
+            </div>
+            <div class="profile-info pt-5 d-flex align-items-center justify-content-between">
+                <div>
+                    <h3 id="sponsorName">Loading...</h3>
+                    <p class="mb-0">Sponsor</p>
+                    <p id="sponsorEmail" class="text-muted"></p>
                 </div>
             </div>
         </div>
-
-        <div class="row">
+    </div>
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        fetch('/sponsor/profile')
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                    window.location.href = '/sponsor/login'; // Redirect if not logged in
+                } else {
+                    document.getElementById('sponsorName').textContent = data.full_name;
+                    document.getElementById('sponsorEmail').textContent = data.email;
+                    
+                    // Check if profile picture exists
+                    if (data.profile_picture) {
+                        document.getElementById('sponsorAvatar').src = data.profile_picture;
+                    }
+                }
+            })
+            .catch(error => console.error('Error fetching profile:', error));
+    });
+    </script>
+    
+  <div class="row">
             <div class="col-12 col-xl-8">
                 <div class="card rounded-4 border-top border-4 border-primary border-gradient-1">
                     <div class="card-body p-4">
@@ -278,38 +186,15 @@
                                 <h5 class="mb-0 fw-bold">Edit Profile</h5>
                             </div>
                         </div>
-                        <form id="editSponsorForm" class="row g-4">
-                            <div class="col-md-6">
-                                <label for="firstName" class="form-label">First Name</label>
-                                <input type="text" class="form-control" id="firstName" placeholder="First Name" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="lastName" class="form-label">Last Name</label>
-                                <input type="text" class="form-control" id="lastName" placeholder="Last Name" required>
-                            </div>
-                            <div class="col-md-12">
-                                <label for="phone" class="form-label">Phone</label>
-                                <input type="text" class="form-control" id="phone" placeholder="Phone" required>
-                            </div>
-                            <div class="col-md-12">
-                                <label for="email" class="form-label">Email</label>
-                                <input type="email" class="form-control" id="email" required>
-                            </div>
-                            <div class="col-md-12">
-                                <label for="dob" class="form-label">DOB</label>
-                                <input type="date" class="form-control" id="dob" required>
-                            </div>
-                            <div class="col-md-12">
-                                <label for="address" class="form-label">Address</label>
-                                <textarea class="form-control" id="address" placeholder="Address ..." rows="4" required></textarea>
-                            </div>
-                            <div class="col-md-12">
-                                <div class="d-md-flex d-grid align-items-center gap-3">
-                                    <button type="submit" class="btn btn-grd-info px-4">Update Profile</button>
-                                    <button type="reset" class="btn btn-grd-info px-4">Reset</button>
-                                </div>
-                            </div>
-                        </form>
+                        <form id="updateProfileForm">
+                          <label>First Name: <input type="text" id="first_name" required></label><br>
+                          <label>Last Name: <input type="text" id="last_name" required></label><br>
+                          <label>Email: <input type="email" id="email" required></label><br>
+                          <label>Phone: <input type="text" id="phone" required></label><br>
+                          <label>DOB: <input type="date" id="dob" required></label><br>
+                          <label>Address: <input type="text" id="address" required></label><br>
+                          <button type="submit">Update Profile</button>
+                      </form>                      
                     </div>
                 </div>
             </div>  
@@ -318,109 +203,88 @@
               <div class="card rounded-4">
                   <div class="card-body">
                       <div class="d-flex align-items-start justify-content-between mb-3">
-                          <div>
-                              <h5 class="mb-0 fw-bold">About</h5>
-                          </div>
+                          <h5 class="mb-0 fw-bold">About</h5>
                       </div>
                       <div class="full-info">
                           <div class="info-list d-flex flex-column gap-3">
                               <div class="info-list-item d-flex align-items-center gap-3">
                                   <span class="material-icons-outlined">account_circle</span>
-                                  <p class="mb-0" id="sponsorFullName">Full Name: </p>
+                                  <p class="mb-0" id="sponsorFullName"><strong>Full Name:</strong></p>
                               </div>
                               <div class="info-list-item d-flex align-items-center gap-3">
                                   <span class="material-icons-outlined">done</span>
-                                  <p class="mb-0">Sponsor</p>
+                                  <p class="mb-0"><strong>Role:</strong> Sponsor</p>
                               </div>
                               <div class="info-list-item d-flex align-items-center gap-3">
                                   <span class="material-icons-outlined">send</span>
-                                  <p class="mb-0" id="sponsorEmail">Email: </p>
+                                  <p class="mb-0" id="sponsorEmail"><strong>Email:</strong></p>
                               </div>
                               <div class="info-list-item d-flex align-items-center gap-3">
                                   <span class="material-icons-outlined">call</span>
-                                  <p class="mb-0" id="sponsorPhone">Phone:</p>
+                                  <p class="mb-0" id="sponsorPhone"><strong>Phone:</strong></p>
                               </div>
                           </div>
                       </div>
                   </div>
               </div>
           </div>
-          <!--end row--> 
+          
+          <!--end row-->   
           <script>
-            // Assuming you have a way to get the sponsor ID (perhaps from session or JWT token).
-            const sponsorId = 1; // Example sponsor ID, replace with dynamic ID based on the logged-in user.
-            
-            // Fetch sponsor data and populate the profile
-            fetch(`/getSponsorData?sponsorId=${sponsorId}`)
-              .then(response => response.json())
-              .then(data => {
-                // Populate profile info section
-                document.getElementById("sponsorName").textContent = `${data.first_name} ${data.last_name}`;
-                document.getElementById("sponsorFullName").textContent = `Full Name: ${data.first_name} ${data.last_name}`;
-                document.getElementById("sponsorEmail").textContent = `Email: ${data.email}`;
-                document.getElementById("sponsorPhone").textContent = `Phone: ${data.phone}`;
-                document.getElementById("firstName").value = data.first_name;
-                document.getElementById("lastName").value = data.last_name;
-                document.getElementById("email").value = data.email;
-                document.getElementById("phone").value = data.phone;
-                document.getElementById("dob").value = data.dob; // Assuming dob is in YYYY-MM-DD format
-              })
-              .catch(error => {
-                console.error('Error fetching sponsor data:', error);
-              });
-            
-            // Handle form submission to update profile
-            document.getElementById("editSponsorForm").addEventListener("submit", function (event) {
-              event.preventDefault(); // Prevent default form submission
-            
-              // Collect form data
-              const formData = {
-                first_name: document.getElementById("firstName").value,
-                last_name: document.getElementById("lastName").value,
-                email: document.getElementById("email").value,
-                phone: document.getElementById("phone").value,
-                dob: document.getElementById("dob").value,
-                address: document.getElementById("address").value,
-              };
-            
-              // Send a POST request to update the sponsor profile
-              fetch(`/updateSponsorProfile?sponsorId=${sponsorId}`, {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify(formData),
-              })
-                .then(response => response.json())
-                .then(data => {
-                  // Handle success, show success message or update the UI
-                  alert("Profile updated successfully!");
-                  // Optionally, refresh or update the profile info display
-                })
-                .catch(error => {
-                  console.error('Error updating sponsor data:', error);
-                });
-            });
-            
-            // Handle form reset (optional)
-            document.querySelector("[type='reset']").addEventListener("click", function () {
-              // Optionally, reset form fields to original values or just clear them
-              fetch(`/getSponsorData?sponsorId=${sponsorId}`)
-                .then(response => response.json())
-                .then(data => {
-                  document.getElementById("firstName").value = data.first_name;
-                  document.getElementById("lastName").value = data.last_name;
-                  document.getElementById("email").value = data.email;
-                  document.getElementById("phone").value = data.phone;
-                  document.getElementById("dob").value = data.dob; // Reset to the fetched data
-                  document.getElementById("address").value = data.address;
-                })
-                .catch(error => {
-                  console.error('Error resetting sponsor data:', error);
-                });
-            });
-            </script>
-                   
+            async function fetchSponsorData() {
+    try {
+        const response = await fetch('/getSponsorData');
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const sponsor = await response.json();
+        document.getElementById('first_name').value = sponsor.first_name;
+        document.getElementById('last_name').value = sponsor.last_name;
+        document.getElementById('email').value = sponsor.email;
+        document.getElementById('phone').value = sponsor.phone;
+        document.getElementById('dob').value = sponsor.dob;
+        document.getElementById('address').value = sponsor.address;
+    } catch (error) {
+        console.error('Error fetching sponsor data:', error);
+        alert('Failed to fetch sponsor data.');
+    }
+}
+
+// Load sponsor data when page loads
+document.addEventListener('DOMContentLoaded', fetchSponsorData);
+
+async function updateSponsorProfile(event) {
+    event.preventDefault(); // Prevent form submission
+
+    const updatedData = {
+        first_name: document.getElementById('first_name').value,
+        last_name: document.getElementById('last_name').value,
+        email: document.getElementById('email').value,
+        phone: document.getElementById('phone').value,
+        dob: document.getElementById('dob').value,
+        address: document.getElementById('address').value,
+    };
+
+    try {
+        const response = await fetch('/updateSponsorProfile', {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updatedData),
+        });
+
+        const result = await response.json();
+        alert(result.message);
+    } catch (error) {
+        console.error('Error updating profile:', error);
+        alert('Failed to update profile.');
+    }
+}
+
+// Attach event listener to update button
+document.getElementById('updateProfileForm').addEventListener('submit', updateSponsorProfile);
+
+          </script>      
         </div>
     </div>
 </main>
@@ -439,6 +303,7 @@
   <script src="assets\plugins\peity\jquery.peity.min.js"></script>
   <script src="assets\plugins\chartjs\js\chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="assets\js\sponsor-header.js"></script>
   <script>
     $(".data-attributes span").peity("donut")
   </script>

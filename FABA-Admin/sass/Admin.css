@@ -1,0 +1,17 @@
+.badge-notify {
+  position: absolute;
+  top: -5px; /* Adjust vertically */
+  right: -5px; /* Adjust horizontally */
+  background: red;
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 18px;
+  text-align: center;
+}

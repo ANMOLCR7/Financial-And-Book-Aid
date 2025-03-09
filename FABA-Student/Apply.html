@@ -40,173 +40,22 @@
       <div class="btn-toggle">
         <a href="javascript:;"><i class="material-icons-outlined">menu</i></a>
       </div>
-      <div class="search-bar flex-grow-1">
-        <div class="position-relative">
-          <input class="form-control rounded-5 px-5 search-control d-lg-block d-none" type="text" placeholder="Search">
-          <span class="material-icons-outlined position-absolute d-lg-block d-none ms-3 translate-middle-y start-0 top-50">search</span>
-          <span class="material-icons-outlined position-absolute me-3 translate-middle-y end-0 top-50 search-close">close</span>
-          <div class="search-popup p-3">
-            <div class="card rounded-4 overflow-hidden">
-              <div class="card-header d-lg-none">
-                <div class="position-relative">
-                  <input class="form-control rounded-5 px-5 mobile-search-control" type="text" placeholder="Search">
-                  <span class="material-icons-outlined position-absolute ms-3 translate-middle-y start-0 top-50">search</span>
-                  <span class="material-icons-outlined position-absolute me-3 translate-middle-y end-0 top-50 mobile-search-close">close</span>
-                 </div>
-              </div>
-              <div class="card-body search-content">
-                <p class="search-title">Recent Searches</p>
-                <div class="d-flex align-items-start flex-wrap gap-2 kewords-wrapper">
-                  <a href="javascript:;" class="kewords"><span>Angular Template</span><i
-                      class="material-icons-outlined fs-6">search</i></a>
-                  <a href="javascript:;" class="kewords"><span>Dashboard</span><i
-                      class="material-icons-outlined fs-6">search</i></a>
-                  <a href="javascript:;" class="kewords"><span>Admin Template</span><i
-                      class="material-icons-outlined fs-6">search</i></a>
-                  <a href="javascript:;" class="kewords"><span>Bootstrap 5 Admin</span><i
-                      class="material-icons-outlined fs-6">search</i></a>
-                  <a href="javascript:;" class="kewords"><span>Html eCommerce</span><i
-                      class="material-icons-outlined fs-6">search</i></a>
-                  <a href="javascript:;" class="kewords"><span>Sass</span><i
-                      class="material-icons-outlined fs-6">search</i></a>
-                  <a href="javascript:;" class="kewords"><span>laravel 9</span><i
-                      class="material-icons-outlined fs-6">search</i></a>
-                </div>
-                <hr>
-                <p class="search-title">Tutorials</p>
-                <div class="search-list d-flex flex-column gap-2">
-                  <div class="search-list-item d-flex align-items-center gap-3">
-                    <div class="list-icon">
-                      <i class="material-icons-outlined fs-5">play_circle</i>
-                    </div>
-                    <div class="">
-                      <h5 class="mb-0 search-list-title ">Wordpress Tutorials</h5>
-                    </div>
-                  </div>
-                  <div class="search-list-item d-flex align-items-center gap-3">
-                    <div class="list-icon">
-                      <i class="material-icons-outlined fs-5">shopping_basket</i>
-                    </div>
-                    <div class="">
-                      <h5 class="mb-0 search-list-title">eCommerce Website Tutorials</h5>
-                    </div>
-                  </div>
-  
-                  <div class="search-list-item d-flex align-items-center gap-3">
-                    <div class="list-icon">
-                      <i class="material-icons-outlined fs-5">laptop</i>
-                    </div>
-                    <div class="">
-                      <h5 class="mb-0 search-list-title">Responsive Design</h5>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="card-footer text-center bg-transparent">
-                <a href="javascript:;" class="btn w-100">See All Search Results</a>
-              </div>
-            </div>
-          </div>
+      
+      <div class="ms-auto d-flex align-items-center gap-3">
+        <!-- Welcome Message -->
+        <div class="welcome-message">Welcome, Student!</div>
+        
+        <!-- Search Bar -->
+        <div class="search-bar">
+          <input type="text" placeholder="Search..." class="form-control">
         </div>
+        
+        <!-- Current Date -->
+        <div class="current-date" id="current-date"></div>
+        
+        <!-- Current Time -->
+        <div class="current-time" id="current-time"></div>
       </div>
-      <ul class="navbar-nav gap-1 nav-right-links align-items-center">
-        <li class="nav-item d-lg-none mobile-search-btn">
-          <a class="nav-link" href="javascript:;"><i class="material-icons-outlined">search</i></a>
-        </li>
-
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle dropdown-toggle-nocaret position-relative" data-bs-auto-close="outside"
-            data-bs-toggle="dropdown" href="javascript:;"><i class="material-icons-outlined">notifications</i>
-            <span class="badge-notify">5</span>
-          </a>
-          <div class="dropdown-menu dropdown-notify dropdown-menu-end shadow">
-            <div class="px-3 py-1 d-flex align-items-center justify-content-between border-bottom">
-              <h5 class="notiy-title mb-0">Notifications</h5>
-              <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle dropdown-toggle-nocaret option" type="button"
-                  data-bs-toggle="dropdown" aria-expanded="false">
-                  <span class="material-icons-outlined">
-                    more_vert
-                  </span>
-                </button>
-                <div class="dropdown-menu dropdown-option dropdown-menu-end shadow">
-                  <div><a class="dropdown-item d-flex align-items-center gap-2 py-2" href="javascript:;"><i
-                        class="material-icons-outlined fs-6">inventory_2</i>Archive All</a></div>
-                  <div><a class="dropdown-item d-flex align-items-center gap-2 py-2" href="javascript:;"><i
-                        class="material-icons-outlined fs-6">done_all</i>Mark all as read</a></div>
-                  <div><a class="dropdown-item d-flex align-items-center gap-2 py-2" href="javascript:;"><i
-                        class="material-icons-outlined fs-6">mic_off</i>Disable Notifications</a></div>
-                  <div><a class="dropdown-item d-flex align-items-center gap-2 py-2" href="javascript:;"><i
-                        class="material-icons-outlined fs-6">grade</i>What's new ?</a></div>
-                  <div>
-                    <hr class="dropdown-divider">
-                  </div>
-                  <div><a class="dropdown-item d-flex align-items-center gap-2 py-2" href="javascript:;"><i
-                        class="material-icons-outlined fs-6">leaderboard</i>Reports</a></div>
-                </div>
-              </div>
-            </div>
-            <div class="notify-list">
-              <div>
-                <a class="dropdown-item border-bottom py-2" href="javascript:;">
-                  <div class="d-flex align-items-center gap-3">
-                    <div class="user-wrapper bg-primary text-primary bg-opacity-10">
-                      <span>RS</span>
-                    </div>
-                    <div class="">
-                      <h5 class="notify-title">New Account Created</h5>
-                      <p class="mb-0 notify-desc">New user has registered.</p>
-                      <p class="mb-0 notify-time">Yesterday</p>
-                    </div>
-                    <div class="notify-close position-absolute end-0 me-3">
-                      <i class="material-icons-outlined fs-6">close</i>
-                    </div>
-                  </div>
-                </a>
-              </div>
-              <div>
-                <a class="dropdown-item py-2" href="javascript:;">
-                  <div class="d-flex align-items-center gap-3">
-                    <div class="user-wrapper bg-danger text-danger bg-opacity-10">
-                      <span>PK</span>
-                    </div>
-                    <div class="">
-                      <h5 class="notify-title">New Account Created</h5>
-                      <p class="mb-0 notify-desc">New user has registered.</p>
-                      <p class="mb-0 notify-time">Today</p>
-                    </div>
-                    <div class="notify-close position-absolute end-0 me-3">
-                      <i class="material-icons-outlined fs-6">close</i>
-                    </div>
-                  </div>
-                </a>
-              </div>
-            </div>
-          </div>
-        </li>
-        <li class="nav-item dropdown">
-          <a href="javascript:;" class="dropdown-toggle dropdown-toggle-nocaret" data-bs-toggle="dropdown" aria-label="User Menu">
-            <img src="assets/images/avatars/11.png" class="rounded-circle p-1 border" width="45" height="45" alt="User Avatar">
-          </a>
-          <div class="dropdown-menu dropdown-user dropdown-menu-end shadow">
-            <a class="dropdown-item gap-2 py-2" href="javascript:;">
-              <div class="text-center">
-                <img src="assets/images/avatars/11.png" class="rounded-circle p-1 shadow mb-3" width="90" height="90" alt="User Avatar">
-                <h5 class="user-name mb-0 fw-bold">Hello, Jhon</h5>
-              </div>
-            </a>
-            <hr class="dropdown-divider">
-            <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="javascript:;"><i class="material-icons-outlined">person_outline</i>Profile</a>
-            <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="javascript:;"><i class="material-icons-outlined">local_bar</i>Setting</a>
-            <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="javascript:;"><i class="material-icons-outlined">dashboard</i>Dashboard</a>
-            <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="javascript:;"><i class="material-icons-outlined">account_balance</i>Earning</a>
-            <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="javascript:;"><i class="material-icons-outlined">cloud_download</i>Downloads</a>
-            <hr class="dropdown-divider">
-            <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="javascript:;"><i class="material-icons-outlined">power_settings_new</i>Logout</a>
-          </div>
-        </li>
-      </ul>
-
     </nav>
   </header>
   <!--end top header-->
@@ -331,8 +180,8 @@
                       <input type="text" class="form-control" id="studentId" name="studentId" placeholder="Enter Student ID" required>
                   </div>
                   <div class="col-12 col-lg-6">
-                      <label class="form-label" for="purpose">Purpose</label>
-                      <textarea class="form-control" id="purpose" name="purpose" placeholder="Enter Purpose" rows="3" required></textarea>
+                      <label class="form-label" for="prnNo">Prn No</label>
+                      <input type="text" class="form-control" id="prnNo" name="prnNo" placeholder="Enter prn no"  required>
                   </div>
                     <div class="col-12 col-lg-6">
                       <button type="button" class="btn btn-grd-primary px-4" onclick="stepper1.next()" aria-label="Next Step">Next<i class='bx bx-right-arrow-alt ms-2'></i></button>
@@ -454,89 +303,177 @@
           </div>
           <script>
             document.addEventListener('DOMContentLoaded', () => {
-              // Initialize stepper
+              // Initialize Stepper
               const stepper1 = new Stepper(document.querySelector('#stepper1'), {
                 linear: false,
                 animation: true
               });
-          
-              // Function to validate a step before moving to the next one
-              function validateStep(stepNumber) {
-                const stepPane = document.querySelector(`#test-l-${stepNumber}`);
-                const inputs = stepPane.querySelectorAll('input, select, textarea');
-                let valid = true;
-          
-                inputs.forEach(input => {
-                  if (input.offsetParent === null) return; // Skip hidden fields
-          
-                  if (input.required && !input.value.trim()) { // Check required fields for value
-                    valid = false;
-                    input.classList.add('is-invalid');
-                    input.reportValidity(); // This will show the built-in browser validation message
-                  } else if (input.checkValidity() === false) { // Check general validity
-                    valid = false;
-                    input.classList.add('is-invalid');
-                    input.reportValidity();
-                  } else {
-                    input.classList.remove('is-invalid');
-                  }
-                });
-          
-                // Special bank account and IFSC code check for step 2 (Account Details)
-                if (stepNumber === 2) {
-                  const bankAccountNumber = document.getElementById('bankAccountNumber');
-                  const ifscCode = document.getElementById('ifscCode');
-                  if (bankAccountNumber.value.trim() === '' || ifscCode.value.trim() === '') {
-                    valid = false;
-                    if (bankAccountNumber.value.trim() === '') {
-                      bankAccountNumber.classList.add('is-invalid');
-                      bankAccountNumber.setCustomValidity("Bank Account Number is required.");
-                    }
-                    if (ifscCode.value.trim() === '') {
-                      ifscCode.classList.add('is-invalid');
-                      ifscCode.setCustomValidity("IFSC Code is required.");
-                    }
-                  } else {
-                    bankAccountNumber.classList.remove('is-invalid');
-                    bankAccountNumber.setCustomValidity('');
-                    ifscCode.classList.remove('is-invalid');
-                    ifscCode.setCustomValidity('');
-                  }
+            
+              // Function to validate fields dynamically (Live Validation)
+              function validateField(field, validationFn) {
+                field.addEventListener("blur", () => validationFn(field));
+                field.addEventListener("input", () => removeError(field)); // Remove error on user input
+              }
+            
+              // Function to validate text fields (Only letters)
+              function validateText(field) {
+                if (!/^[A-Za-z\s]+$/.test(field.value.trim())) {
+                  showError(field, "Only letters are allowed");
+                  return false;
                 }
-          
-                if (valid) {
-                  stepper1.next();
+                removeError(field);
+                return true;
+              }
+            
+              // Function to validate phone number (10 digits)
+              function validatePhone(field) {
+                if (!/^\d{10}$/.test(field.value.trim())) {
+                  showError(field, "Enter a valid 10-digit phone number");
+                  return false;
+                }
+                removeError(field);
+                return true;
+              }
+            
+              // Function to validate email
+              function validateEmail(field) {
+                if (!/^\S+@\S+\.\S+$/.test(field.value.trim())) {
+                  showError(field, "Enter a valid email address");
+                  return false;
+                }
+                removeError(field);
+                return true;
+              }
+            
+              // Function to validate PRN number (6-12 digits)
+              function validatePRN(field) {
+                if (!/^\d{6,12}$/.test(field.value.trim())) {
+                  showError(field, "PRN No must be between 6-12 digits");
+                  return false;
+                }
+                removeError(field);
+                return true;
+              }
+            
+              // Function to validate bank account
+              function validateBank(field) {
+                if (!/^\d{8,18}$/.test(field.value.trim())) {
+                  showError(field, "Bank Account must be 8-18 digits");
+                  return false;
+                }
+                removeError(field);
+                return true;
+              }
+            
+              // Function to validate IFSC Code
+              function validateIFSC(field) {
+                if (!/^[A-Z]{4}0[A-Z0-9]{6}$/.test(field.value.trim())) {
+                  showError(field, "Enter a valid IFSC code (e.g., HDFC0123456)");
+                  return false;
+                }
+                removeError(field);
+                return true;
+              }
+            
+              // Function to validate Aid Amount (Currency)
+              function validateAidAmount(field) {
+                let value = field.value.trim().replace(/[₹,]/g, ""); // Remove ₹ and commas
+
+                if (!/^\d+(\.\d{1,2})?$/.test(value)) {
+                  showError(field, "Enter a valid amount (e.g., 1000.00)");
+                  return false;
+                }
+
+                removeError(field);
+                field.value = parseFloat(value).toFixed(2); // Format as a number with two decimal places
+                return true;
+              }
+
+            
+              // Function to validate numbers (e.g., percentages & semester grades)
+              function validateNumeric(field) {
+                if (field.value.trim() !== "" && !/^\d+(\.\d{1,2})?$/.test(field.value.trim())) {
+                  showError(field, "Enter a valid number (e.g., 85.5)");
+                  return false;
+                }
+                removeError(field);
+                return true;
+              }
+            
+              // Function to show error message
+              function showError(field, message) {
+                field.classList.add("is-invalid");
+                if (!field.nextElementSibling || !field.nextElementSibling.classList.contains("error-message")) {
+                  const error = document.createElement("div");
+                  error.className = "error-message";
+                  error.style.color = "red";
+                  error.style.fontSize = "12px";
+                  error.innerText = message;
+                  field.parentNode.appendChild(error);
                 }
               }
-          
-              // Form Submission Handling
-              const form = document.querySelector('#applyForm');
-              form.addEventListener('submit', (event) => {
-                event.preventDefault(); // Prevent default form submission
-                console.log("Form submitted!");
-          
-                const formData = new FormData(form);
-                const data = Object.fromEntries(formData.entries()); // Convert FormData to a plain object
-          
-                // Send form data to the backend
-                fetch('/submit-financial-aid', {
-                  method: 'POST',
-                  headers: {
-                    'Content-Type': 'application/json'
-                  },
-                  body: JSON.stringify(data)  // Use the data object
+            
+              // Function to remove error message
+              function removeError(field) {
+                field.classList.remove("is-invalid");
+                if (field.nextElementSibling && field.nextElementSibling.classList.contains("error-message")) {
+                  field.nextElementSibling.remove();
+                }
+              }
+            
+              // **Attach Live Validation for Each Field**
+              validateField(document.getElementById("firstName"), validateText);
+              validateField(document.getElementById("lastName"), validateText);
+              validateField(document.getElementById("phoneNumber"), validatePhone);
+              validateField(document.getElementById("emailAddress"), validateEmail);
+              validateField(document.getElementById("accountEmail"), validateEmail);
+              validateField(document.getElementById("prnNo"), validatePRN);
+              validateField(document.getElementById("bankAccountNumber"), validateBank);
+              validateField(document.getElementById("ifscCode"), validateIFSC);
+              validateField(document.getElementById("aidAmount"), validateAidAmount);
+            
+              const numericFields = ["jrFyPercentage", "jrSyPercentage", "semester1", "semester2", "semester3", "semester4"];
+              numericFields.forEach(id => validateField(document.getElementById(id), validateNumeric));
+            
+              // **Form Submission**
+              document.querySelector("#applyForm").addEventListener("submit", (event) => {
+                event.preventDefault(); 
+            
+                let isValid = true;
+                isValid &= validateText(document.getElementById("firstName"));
+                isValid &= validateText(document.getElementById("lastName"));
+                isValid &= validatePhone(document.getElementById("phoneNumber"));
+                isValid &= validateEmail(document.getElementById("emailAddress"));
+                isValid &= validateEmail(document.getElementById("accountEmail"));
+                isValid &= validateAidAmount(document.getElementById("aidAmount"));
+                isValid &= validatePRN(document.getElementById("prnNo"));
+                isValid &= validateBank(document.getElementById("bankAccountNumber"));
+                isValid &= validateIFSC(document.getElementById("ifscCode"));
+            
+                numericFields.forEach(id => {
+                  isValid &= validateNumeric(document.getElementById(id));
+                });
+            
+                if (!isValid) {
+                  return; // Prevent submission if errors exist
+                }
+            
+                console.log("Form submitted successfully!");
+                alert("Form successfully submitted!");
+            
+                const formData = new FormData(event.target);
+                const data = Object.fromEntries(formData.entries());
+            
+                fetch("/submit-financial-aid", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify(data)
                 })
                 .then(response => response.json())
-                  .then(data => {
-                    console.log('Success:', data);
-                    // Handle success (e.g., show a success message, redirect, etc.)
-                  })
-                  .catch((error) => {
-                    console.error('Error:', error);
-                    // Handle error (e.g., show an error message)
-                  });
+                .then(data => console.log("Success:", data))
+                .catch(error => console.error("Error:", error));
               });
-          
+
               // Semester Fields Display Logic
               const currentYearSelect = document.getElementById('currentYearSelect');
               const semesterFields = {
@@ -547,15 +484,15 @@
                 semester3: document.getElementById('semester3'),
                 semester4: document.getElementById('semester4')
               };
-          
+
               function updateSemesterFields() {
                 const currentYear = currentYearSelect.value;
-          
+
                 Object.values(semesterFields).forEach(field => {
                   field.style.display = 'none';
                   field.removeAttribute('required');
                 });
-          
+
                 if (currentYear === 'FY') {
                   semesterFields.jrFyPercentage.style.display = 'block';
                   semesterFields.jrSyPercentage.style.display = 'block';
@@ -573,19 +510,12 @@
                   });
                 }
               }
-          
+
               currentYearSelect.addEventListener('change', updateSemesterFields);
-              updateSemesterFields(); // Initialize on page load
-          
-              // Step Button Listeners
-              document.querySelectorAll('button[data-step]').forEach(button => {
-                button.addEventListener('click', (event) => {
-                  const stepNumber = event.target.dataset.step;
-                  validateStep(stepNumber);
-                });
+              updateSemesterFields();
+            
               });
-            });
-          </script>
+            </script>
         </div>
       </div>
       <!--end stepper one--> 
@@ -616,5 +546,6 @@
 	<script src="assets/plugins/bs-stepper/js/main.js"></script>
   <script src="assets/plugins/simplebar/js/simplebar.min.js"></script>
   <script src="assets/js/main.js"></script>
+  <script src="assets/js/student-header.js"></script>
 </body>
 </html>
