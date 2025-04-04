@@ -6,11 +6,35 @@ const bcrypt = require('bcrypt');
 const app = express();
 const PORT = 3000;
 const session = require('express-session');
-const nodemailer = require("nodemailer");
-const jwt = require("jsonwebtoken");
-const crypto = require('crypto');
+const multer = require('multer');
 require("dotenv").config();
 
+const storage = multer.diskStorage({
+    destination: path.join(__dirname, 'FABA-Sponsor/uploads'),
+    filename: (req, file, cb) => {
+        if (!req.session || !req.session.sponsor) {
+            return cb(new Error('Unauthorized'));
+        }
+        const sponsorId = req.session.sponsor.sponsor_id;
+        cb(null, `sponsor_${sponsorId}${path.extname(file.originalname)}`);
+    }
+});
+
+const upload = multer({ 
+    storage,
+    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+    fileFilter: (req, file, cb) => {
+        const allowedTypes = /jpeg|jpg|png/;
+        const mimeType = allowedTypes.test(file.mimetype);
+        const extName = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+
+        if (mimeType && extName) {
+            cb(null, true);
+        } else {
+            cb(new Error('Only .png, .jpg and .jpeg formats allowed!'));
+        }
+    }
+});
 
 // Set up session middleware
 app.use(session({
@@ -194,6 +218,28 @@ app.get('/api/total-students', async (req, res) => {
     }
   });
 
+// API endpoint to fetch the number of sponsors per month
+app.get('/api/sponsors', async (req, res) => {
+    try {
+        const [rows] = await db.query(`
+            SELECT 
+                MIN(DATE_FORMAT(created_at, '%Y-%m-%d')) AS date,  -- Pick earliest date in the month
+                MONTH(created_at) AS month,
+                MONTHNAME(created_at) AS month_name,
+                COUNT(*) AS sponsor_count
+            FROM sponsors
+            WHERE status = 'Active'
+            GROUP BY MONTH(created_at), MONTHNAME(created_at)
+            ORDER BY MONTH(created_at)
+        `);
+        
+        res.json(rows);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
   // API to fetch book donations grouped by month
   app.get('/api/monthly-book-donations', async (req, res) => {
     try {
@@ -222,62 +268,49 @@ app.get('/api/total-students', async (req, res) => {
     }
   });
   
-  
-  
-  
-
- // API endpoint to fetch pending financial aid requests data by month
- app.get('/api/pending-financial-aid', async (req, res) => {
+// API endpoint to fetch pending financial aid requests data by date and month
+app.get('/api/pending-financial-aid', async (req, res) => {
     const query = `
-        SELECT MONTH(submission_date) AS month, COUNT(*) AS pending_count
-        FROM financial_aid_requests
-        WHERE status = 'Pending'
-        GROUP BY MONTH(submission_date)
-        ORDER BY MONTH(submission_date)
+        SELECT 
+            DATE_FORMAT(submission_date, '%Y-%m-%d') AS date, 
+            MONTH(submission_date) AS month,
+            COUNT(*) AS pending_count
+        FROM 
+            financial_aid_requests
+        WHERE 
+            status = 'Pending'
+        GROUP BY 
+            submission_date -- ✅ Group by submission_date to avoid conflict
+        ORDER BY 
+            submission_date
     `;
   
     try {
-      const [results] = await db.query(query); // Use promise-based query
-      res.json(results); // Send the results as JSON response
+        const [results] = await db.query(query);
+        res.json(results);
     } catch (err) {
-      res.status(500).json({ error: err.message }); // Send error message if query fails
-    }
-  });
-  
-
-
-// API endpoint to fetch the number of sponsors per month
-app.get('/api/sponsors', async (req, res) => {
-    try {
-        // Query the database for sponsor counts per month using promises
-        const [rows] = await db.query(`
-            SELECT MONTH(created_at) AS month, COUNT(*) AS sponsor_count
-            FROM sponsors
-            WHERE status = 'Active'
-            GROUP BY MONTH(created_at)
-            ORDER BY MONTH(created_at)
-        `);
-        
-        // Send the results as JSON to the frontend
-        res.json(rows);
-    } catch (err) {
-        // Handle any errors during the database query
-        console.error(err);
         res.status(500).json({ error: err.message });
     }
 });
 
-    // Endpoint to get all financial aid requests
+// Endpoint to get all financial aid requests
 app.get('/api/financial-aid-requests', async (req, res) => {
     try {
-        const [results] = await db.execute('SELECT * FROM financial_aid_requests');
+        const [results] = await db.execute(`
+            SELECT * 
+            FROM financial_aid_requests 
+            WHERE status = 'Pending'
+            ORDER BY submission_date DESC;  -- Ensures recent requests are listed first
+        `);
         res.json(results);
     } catch (error) {
-        console.error('Error fetching requests:', error);
+        console.error('Error fetching pending requests:', error);
         res.status(500).json({ error: 'Database error' });
     }
 });
 
+
+//(2. finncial aid request)
 // Get all admin financial aid requests
 app.get('/api/financial-aid-requests', async (req, res) => {
     try {
@@ -335,6 +368,7 @@ app.get('/admin/get-request-details/:requestId', async (req, res) => {
     }
 });
 
+//(3.book donated)
 //admin to see book donations
 app.get('/api/admin/book-donations', async (req, res) => {
     // Example check for admin authentication (this depends on your auth logic)
@@ -386,7 +420,7 @@ app.get('/api/book-donations', async (req, res) => {
     }
 });
  
-
+//(4. Manage sponsors)
 //Amin manage Sponsors API Endpoint
 // API endpoint to get all sponsors
 app.get('/api/getSponsors', async (req, res) => {
@@ -396,6 +430,31 @@ app.get('/api/getSponsors', async (req, res) => {
     } catch (err) {
         console.error('Error fetching sponsors:', err);
         res.status(500).send('Error fetching sponsors');
+    }
+});
+
+//(5.Admin review the sponsors contribution)
+// API Route to Fetch Contributions
+app.get("/api/contributions", async (req, res) => {
+    try {
+        const [results] = await db.query(`
+            SELECT 
+                contribution_id, 
+                request_id, 
+                student_id, 
+                prn_no, 
+                student_name, 
+                sponsor_id, 
+                sponsor_name, 
+                contribution_amount, 
+                contribution_date 
+            FROM financial_contributions
+            ORDER BY contribution_date DESC;
+        `);
+        res.json(results); // Directly send array
+    } catch (error) {
+        console.error("Error fetching contributions:", error);
+        res.status(500).json({ error: "Database error" });
     }
 });
 
@@ -411,13 +470,6 @@ async function generateHash() {
 
 generateHash();
 
-const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-        user: 'your-email@gmail.com', // ✅ Replace with your Gmail
-        pass: 'your-app-password' // ✅ Use an App Password, NOT your Gmail password!
-    }
-});
 
 require("dotenv").config();
 
@@ -493,37 +545,83 @@ app.post('/sponsor/signup', async (req, res) => {
 
 // Forgot Password Route
 app.post('/sponsor/forgot-password', async (req, res) => {
+    const { email, sponsor_id } = req.body;
+
+    if (!email || !sponsor_id) {
+        return res.status(400).json({ message: "Missing email or sponsor ID." });
+    }
+
+    try {
+        const [rows] = await db.query("SELECT * FROM sponsors WHERE email = ? AND sponsor_id = ?", [email, sponsor_id]);
+
+        if (rows.length === 0) {
+            return res.status(400).json({ message: "Invalid email or sponsor ID." });
+        }
+
+        res.status(200).json({ redirect: `/sponsor/reset-password?sponsor_id=${sponsor_id}` });
+    } catch (error) {
+        console.error("Forgot Password error:", error);
+        res.status(500).json({ message: "Server error. Try again later." });
+    }
+});
+
+//Email verification
+app.post('/sponsor/validate-email', async (req, res) => {
     const { email } = req.body;
+
+    console.log("Email received:", email); // ✅ Check if email is being received
 
     if (!email) {
         return res.status(400).json({ message: "Please enter your email." });
     }
 
     try {
-        // ✅ Check if email exists
+        // ✅ Check if email exists in DB
         const [rows] = await db.query("SELECT sponsor_id FROM sponsors WHERE email = ?", [email]);
+
+        console.log("DB result:", rows); // ✅ Log DB result
 
         if (rows.length === 0) {
             return res.status(404).json({ message: "Email not found. Please check and try again." });
         }
 
-        // ✅ Generate a reset token
-        const resetToken = crypto.randomBytes(32).toString('hex');
-        const resetLink = `http://localhost:${PORT}/reset-password/${resetToken}`;
-
-        // ✅ Store reset token in DB (Optional: If implementing password reset feature)
-
-        console.log(`Password reset link (for testing): ${resetLink}`);
-
-        // ✅ Send success response
-        res.status(200).json({ message: "Password reset link sent to your email." });
-
+        res.status(200).json({ message: "Email is valid." });
     } catch (error) {
-        console.error("Forgot Password error:", error);
-        res.status(500).json({ message: "Server error. Please try again later." });
+        console.error("Email validation error:", error); // ✅ Log any errors
+        res.status(500).json({ message: "Server error. Try again later." });
     }
 });
 
+//Reset Password
+app.post('/sponsor/reset-password', async (req, res) => {
+    const { sponsor_id, newPassword } = req.body;
+
+    if (!sponsor_id || !newPassword) {
+        return res.status(400).json({ message: "Missing sponsor ID or password." });
+    }
+
+    try {
+        // ✅ Hash the new password
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+        // ✅ Update the password in the database
+        const [result] = await db.query(
+            "UPDATE sponsors SET password = ? WHERE sponsor_id = ?",
+            [hashedPassword, sponsor_id]
+        );
+
+        // ✅ Check if update was successful
+        if (result.affectedRows === 0) {
+            return res.status(400).json({ message: "Invalid sponsor ID." });
+        }
+
+        res.status(200).json({ message: "Password has been reset successfully!" });
+
+    } catch (error) {
+        console.error("Reset Password error:", error);
+        res.status(500).json({ message: "Server error. Please try again later." });
+    }
+});
 
 //Sponsor panel(1.dashboard)
 //dashboard sponsors details
@@ -674,8 +772,12 @@ app.post('/sponsor/contribute/:requestId', async (req, res) => {
 
         res.status(200).json({ message: 'Contribution recorded successfully' });
     } catch (error) {
+        if (error.sqlState === '45000' && error.sqlMessage.includes('Contribution exceeds requested amount')) {
+            res.json({ error: 'Your payment exceeds the remaining amount. Please enter a valid amount.' });
+        } else{
         console.error('Error recording contribution:', error);
         res.status(500).json({ error: 'Failed to record contribution' });
+        }
     }
 });
 
@@ -684,7 +786,7 @@ app.post('/sponsor/contribute/:requestId', async (req, res) => {
 app.get('/sponsor/get-student-bank-details/:studentId', async (req, res) => {
     const { studentId } = req.params;
     try {
-        const [results] = await db.execute('SELECT bank_account_no, ifsc_code FROM financial_aid_requests WHERE student_id = ?', [studentId]);
+        const [results] = await db.execute('SELECT bank_account_no, ifsc_code, amount_requested, remaining_amount FROM financial_aid_requests WHERE student_id = ?', [studentId]);
         
         if (results.length > 0) {
             res.json(results[0]);  // Return the student's bank details
@@ -731,41 +833,30 @@ app.get('/sponsor/contributions', async (req, res) => {
 
 
 //Sponsor panel(4.Profile)
-app.get('/sponsor/profile', async (req, res) => {
-    if (!req.session.sponsor) {
-        return res.status(401).json({ error: 'Unauthorized. Please log in.' });
-    }
-
-    try {
-        const sponsorId = req.session.sponsor.sponsor_id;
-        const [rows] = await db.query(
-            'SELECT sponsor_id, CONCAT(first_name, " ", last_name) AS full_name, email, profile_picture FROM sponsors WHERE sponsor_id = ?', 
-            [sponsorId]
-        );
-
-        if (rows.length === 0) {
-            return res.status(404).json({ error: 'Sponsor not found' });
-        }
-
-        res.status(200).json(rows[0]);
-    } catch (error) {
-        console.error('Error fetching sponsor profile:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
-});
-
-// Get sponsor data by sponsor ID
-// Get sponsor data by sponsor ID
 app.get('/getSponsorData', async (req, res) => {
     if (!req.session.sponsor) {
         return res.status(401).json({ message: 'Unauthorized. Please log in.' });
     }
 
-    const sponsorId = req.session.sponsor.sponsor_id; // Fetch from session
+    const sponsorId = req.session.sponsor.sponsor_id;
 
     try {
         const [rows] = await db.execute(
-            'SELECT sponsor_id, first_name, last_name, email, phone, dob, address FROM sponsors WHERE sponsor_id = ?',
+            `SELECT sponsor_id, 
+                    CONCAT(COALESCE(first_name, ''), ' ', COALESCE(last_name, '')) AS full_name,
+                    first_name,
+                    last_name,
+                    email,
+                    phone,
+                    DATE_FORMAT(dob, '%Y-%m-%d') AS dob,
+                    address,
+                    profile_picture,
+                    contribution_amount,
+                    status,
+                    DATE_FORMAT(created_at, '%Y-%m-%d') AS created_at,
+                    DATE_FORMAT(last_updated_at, '%Y-%m-%d') AS last_updated_at
+             FROM sponsors 
+             WHERE sponsor_id = ?`,
             [sponsorId]
         );
 
@@ -773,47 +864,69 @@ app.get('/getSponsorData', async (req, res) => {
             return res.status(404).json({ message: 'Sponsor not found' });
         }
 
-        res.json(rows[0]); // Send the sponsor data
+        // ✅ Fix profile picture path
+        const profilePicture = rows[0].profile_picture || '/uploads/default-avatar.png';
+
+        res.json({
+            full_name: rows[0].full_name || 'Not provided',
+            first_name: rows[0].first_name || '',
+            last_name: rows[0].last_name || '',
+            email: rows[0].email || 'Not provided',
+            phone: rows[0].phone || 'Not provided',
+            dob: rows[0].dob || null,
+            address: rows[0].address || '',
+            profile_picture: profilePicture,
+            contribution_amount: rows[0].contribution_amount || '0.00',
+            status: rows[0].status || 'Inactive',
+            created_at: rows[0].created_at || 'N/A',
+            last_updated_at: rows[0].last_updated_at || 'N/A'
+        });
     } catch (error) {
         console.error('Error fetching sponsor data:', error);
         res.status(500).json({ message: 'Error fetching sponsor data' });
     }
 });
 
-// Update sponsor profile
-app.patch('/updateSponsorProfile', async (req, res) => {
+// ✅ Update Profile (with profile picture)
+app.patch('/updateSponsorProfile', upload.single('profile_picture'), async (req, res) => {
     if (!req.session.sponsor) {
         return res.status(401).json({ message: 'Unauthorized. Please log in.' });
     }
 
-    const sponsorId = req.session.sponsor.sponsor_id; // Fetch from session
+    const sponsorId = req.session.sponsor.sponsor_id;
     const { first_name, last_name, email, phone, dob, address } = req.body;
+    
+    // ✅ Handle Profile Picture Path
+    const profilePicture = req.file 
+        ? `/uploads/sponsor_${sponsorId}${path.extname(req.file.originalname)}` 
+        : undefined;
 
     try {
-        await db.execute(
-            'UPDATE sponsors SET first_name = ?, last_name = ?, email = ?, phone = ?, dob = ?, address = ? WHERE sponsor_id = ?',
-            [first_name, last_name, email, phone, dob, address, sponsorId]
-        );
+        const query = `
+            UPDATE sponsors 
+            SET first_name = ?, last_name = ?, email = ?, phone = ?, dob = ?, address = ?
+            ${profilePicture !== undefined ? ', profile_picture = ?' : ''}
+            WHERE sponsor_id = ?
+        `;
 
-        res.json({ message: 'Profile updated successfully' });
+        const params = profilePicture !== undefined
+            ? [first_name, last_name, email, phone, dob, address, profilePicture, sponsorId]
+            : [first_name, last_name, email, phone, dob, address, sponsorId];
+
+        await db.execute(query, params);
+
+        res.json({ 
+            success: true, 
+            message: 'Profile updated successfully',
+            filePath: profilePicture 
+        });
     } catch (error) {
-        console.error('Error updating sponsor profile:', error);
-        res.status(500).json({ message: 'Error updating profile' });
+        console.error('Error updating profile:', error);
+        res.status(500).json({ message: 'Failed to update profile' });
     }
 });
 
 //Sponsor and Admin header
-// 🔔 Fetch Pending Financial Aid Requests
-app.get('/api/financial-aid-requests', async (req, res) => {
-    try {
-      const [rows] = await db.query('SELECT * FROM financial_aid_requests WHERE status = "Pending"');
-      res.json(rows);
-    } catch (error) {
-      console.error('Database error:', error);
-      res.status(500).json({ error: 'Database error' });
-    }
-  });
-  
 // Check for New Requests and Send Notification
   app.get('/api/new-requests', async (req, res) => {
     try {
@@ -854,6 +967,8 @@ app.get('/api/financial-aid-requests', async (req, res) => {
 app.get('/', (req, res) => {
     res.send('<h1>Welcome to FABA</h1><p>Use /student, /admin, or /sponsor to navigate.</p>');
 });
+
+app.use('/uploads', express.static(path.join(__dirname, 'FABA-Sponsor/uploads')));
 
 // 404 Handler for Undefined Routes
 app.use((req, res) => {

@@ -109,7 +109,6 @@
                         <tr>
                           <th>Transaction ID</th>
                           <th>User Name</th>
-                          <th>Purpose</th>
                           <th>Course Name</th>
                           <th>Current Year</th>
                           <th>Amount Requested</th>
@@ -125,7 +124,6 @@
                         <tr>
                             <th>Transaction ID</th>
                             <th>User Name</th>
-                            <th>Purpose</th>
                             <th>Course Name</th>
                             <th>Current Year</th>
                             <th>Amount Requested</th>
@@ -154,7 +152,6 @@ function loadFinancialAidRequests() {
         tr.innerHTML = `
           <td>${row.request_id}</td>
           <td>${row.first_name} ${row.last_name}</td>
-          <td>${row.purposes}</td>
           <td>${row.course}</td>
           <td>${row.year}</td>
           <td>${row.amount_requested }</td>

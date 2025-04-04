@@ -225,6 +225,8 @@
           <div class="modal-body">
               <p><strong>Bank Account Number:</strong> <span id="bankAccountNo"></span></p>
               <p><strong>IFSC Code:</strong> <span id="ifscCode"></span></p>
+              <p><strong>Total Amount Requested:</strong> <span id="AmountRequest"></span></p>
+              <p><strong>Amount Remaining:</strong> <span id="AmountRemaining"></span></p>
 
               <!-- New Input for Amount -->
               <div class="mb-3">
@@ -293,6 +295,8 @@
                     document.getElementById('bankAccountNo').textContent = bankData.bank_account_no;
                     document.getElementById('bankAccountNo').setAttribute('data-request-id', requestId); // Add request ID to modal
                     document.getElementById('ifscCode').textContent = bankData.ifsc_code;
+                    document.getElementById('AmountRequest').textContent = `₹${parseFloat(bankData.amount_requested).toFixed(2)}`;
+                    document.getElementById('AmountRemaining').textContent = `₹${parseFloat(bankData.remaining_amount).toFixed(2)}`;
 
                     const modal = new bootstrap.Modal(document.getElementById('bankDetailsModal'));
                     modal.show();
@@ -311,9 +315,15 @@
 function processPayment() {
     const paymentAmount = parseFloat(document.getElementById('paymentAmount').value);
     const requestId = document.getElementById('bankAccountNo').getAttribute('data-request-id');
+    const amountRemaining = parseFloat(document.getElementById('AmountRemaining').textContent);
 
     if (!paymentAmount || paymentAmount <= 0) {
         alert('Please enter a valid payment amount.');
+        return;
+    }
+
+    if (paymentAmount > amountRemaining) {
+        alert(`You cannot pay more than the remaining amount: ₹${amountRemaining.toFixed(2)}`);
         return;
     }
 

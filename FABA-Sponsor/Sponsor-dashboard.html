@@ -147,7 +147,7 @@
                 <div class="row">
                   <div class="col-12 col-sm-7">
                     <div class="d-flex align-items-center gap-3 mb-5">
-                      <img src="assets/images/avatars/11.png" class="rounded-circle bg-grd-info p-1" width="60" height="60" alt="user">
+                      <img id="Sponsor-Avatar" src="/uploads/default-avatar.png" class="rounded-circle bg-grd-info p-1" width="60" height="60" alt="user">
                       <div>
                         <p class="mb-0 fw-semibold">Welcome back</p>
                         <h4 class="fw-semibold mb-0 fs-4 mb-0" id="sponsor-name">Loading...</h4>
@@ -181,6 +181,9 @@
             if (response.ok) {
               // Update the UI with sponsor details
               const sponsor = data.sponsor;
+              document.getElementById('Sponsor-Avatar').src = sponsor.profile_picture 
+                  ? sponsor.profile_picture 
+                  : '/uploads/default-avatar.png';
               document.getElementById('sponsor-name').textContent = sponsor.first_name + ' ' + sponsor.last_name;
               document.getElementById('sponsor-email').textContent = sponsor.email;
               document.getElementById('sponsor-contribution').textContent = sponsor.contribution_amount;
@@ -374,8 +377,8 @@
               totalContributedElement.textContent = `₹${data.total_contributed}`;
         
               // Calculate changes based on historical data
-              const previousContributions = 100; // Replace with actual historical data
-              const previousContributed = 1000; // Replace with actual historical data
+              const previousContributions = 0; // Replace with actual historical data
+              const previousContributed = 0; // Replace with actual historical data
         
               const contributionChange = ((data.total_contributions - previousContributions) / previousContributions) * 100;
               contributionChangeElement.textContent = `${contributionChange.toFixed(2)}%`;

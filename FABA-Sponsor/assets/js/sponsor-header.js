@@ -66,8 +66,12 @@ fetchNotifications();
 
         // Update the header with the sponsor's name and avatar
         document.getElementById('sponsorName').textContent = `Hello, ${sponsorName}`;
-        document.getElementById('sponsorAvatar').src = sponsorAvatar;
-        document.getElementById('sponsorAvatarDropdown').src = sponsorAvatar;
+        document.getElementById('sponsorAvatar').src = sponsor.profile_picture 
+        ? sponsor.profile_picture 
+        : '/uploads/default-avatar.png';
+        document.getElementById('sponsorAvatarDropdown').src = sponsor.profile_picture 
+        ? sponsor.profile_picture 
+        : '/uploads/default-avatar.png';
     } catch (error) {
         console.error('Error fetching sponsor header data:', error);
     }

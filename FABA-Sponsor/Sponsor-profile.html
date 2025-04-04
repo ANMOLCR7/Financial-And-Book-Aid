@@ -30,6 +30,7 @@
   <link href="sass\bordered-theme.css" rel="stylesheet">
   <link href="sass\responsive.css" rel="stylesheet">
   <link href="sass\sponsor.css" rel="stylesheet">
+  <link href="sass\sponsor-profile.css" rel="stylesheet">
 </head>
 <body>
   <!--start header-->
@@ -137,157 +138,222 @@
   <!--start main wrapper-->
   <main class="main-wrapper">
     <div class="main-content">
+      <!-- Profile Section -->
       <div class="card rounded-4">
         <div class="card-body p-4">
-            <div class="position-relative mb-5">
-                <img src="assets/images/gallery/profile-cover.jpg" class="img-fluid rounded-4 shadow" alt="Profile Cover">
-                <div class="profile-avatar position-absolute top-100 start-50 translate-middle">
-                    <img id="sponsorAvatar" src="assets/images/avatars/default.png" class="img-fluid rounded-circle p-1 bg-grd-danger shadow" width="170" height="170" alt="Profile Avatar">
+            <div class="d-flex justify-content-center">
+                <div class="profile-avatar">
+                    <img id="sponsor-Avatar" src="/uploads/default-avatar.png" alt="Profile Avatar">
                 </div>
             </div>
-            <div class="profile-info pt-5 d-flex align-items-center justify-content-between">
-                <div>
-                    <h3 id="sponsorName">Loading...</h3>
-                    <p class="mb-0">Sponsor</p>
-                    <p id="sponsorEmail" class="text-muted"></p>
-                </div>
+            <div class="profile-info pt-3">
+                <h3 id="sponsor-Name">Loading...</h3>
+                <p class="mb-0">Sponsor</p>
+                <p id="sponsorMainEmail" class="text-muted"></p>
             </div>
         </div>
     </div>
     
-    <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        fetch('/sponsor/profile')
-            .then(response => response.json())
-            .then(data => {
-                if (data.error) {
-                    alert(data.error);
-                    window.location.href = '/sponsor/login'; // Redirect if not logged in
-                } else {
-                    document.getElementById('sponsorName').textContent = data.full_name;
-                    document.getElementById('sponsorEmail').textContent = data.email;
-                    
-                    // Check if profile picture exists
-                    if (data.profile_picture) {
-                        document.getElementById('sponsorAvatar').src = data.profile_picture;
-                    }
-                }
-            })
-            .catch(error => console.error('Error fetching profile:', error));
-    });
-    </script>
-    
-  <div class="row">
-            <div class="col-12 col-xl-8">
-                <div class="card rounded-4 border-top border-4 border-primary border-gradient-1">
-                    <div class="card-body p-4">
-                        <div class="d-flex align-items-start justify-content-between mb-3">
-                            <div>
-                                <h5 class="mb-0 fw-bold">Edit Profile</h5>
-                            </div>
-                        </div>
-                        <form id="updateProfileForm">
-                          <label>First Name: <input type="text" id="first_name" required></label><br>
-                          <label>Last Name: <input type="text" id="last_name" required></label><br>
-                          <label>Email: <input type="email" id="email" required></label><br>
-                          <label>Phone: <input type="text" id="phone" required></label><br>
-                          <label>DOB: <input type="date" id="dob" required></label><br>
-                          <label>Address: <input type="text" id="address" required></label><br>
-                          <button type="submit">Update Profile</button>
-                      </form>                      
-                    </div>
+  
+      <!-- Edit Profile Section -->
+      <div class="container">
+        <div class="row">
+          <!-- Edit Profile Section -->
+          <div class="col-12 col-xl-8 mb-4">
+            <div class="card rounded-4 border-top border-4 border-primary border-gradient-1">
+              <div class="card-body p-4">
+                <div class="d-flex align-items-start justify-content-between mb-3">
+                  <h5 class="mb-0 fw-bold">Edit Profile</h5>
                 </div>
-            </div>  
-
-            <div class="col-12 col-xl-4">
-              <div class="card rounded-4">
-                  <div class="card-body">
-                      <div class="d-flex align-items-start justify-content-between mb-3">
-                          <h5 class="mb-0 fw-bold">About</h5>
-                      </div>
-                      <div class="full-info">
-                          <div class="info-list d-flex flex-column gap-3">
-                              <div class="info-list-item d-flex align-items-center gap-3">
-                                  <span class="material-icons-outlined">account_circle</span>
-                                  <p class="mb-0" id="sponsorFullName"><strong>Full Name:</strong></p>
-                              </div>
-                              <div class="info-list-item d-flex align-items-center gap-3">
-                                  <span class="material-icons-outlined">done</span>
-                                  <p class="mb-0"><strong>Role:</strong> Sponsor</p>
-                              </div>
-                              <div class="info-list-item d-flex align-items-center gap-3">
-                                  <span class="material-icons-outlined">send</span>
-                                  <p class="mb-0" id="sponsorEmail"><strong>Email:</strong></p>
-                              </div>
-                              <div class="info-list-item d-flex align-items-center gap-3">
-                                  <span class="material-icons-outlined">call</span>
-                                  <p class="mb-0" id="sponsorPhone"><strong>Phone:</strong></p>
-                              </div>
-                          </div>
-                      </div>
+                <form id="updateProfileForm" class="row g-3">
+                  <div class="col-md-6">
+                    <label for="first_name" class="form-label">First Name</label>
+                    <input type="text" class="form-control" id="first_name" required>
                   </div>
+                  <div class="col-md-6">
+                    <label for="last_name" class="form-label">Last Name</label>
+                    <input type="text" class="form-control" id="last_name" required>
+                  </div>
+                  <div class="col-md-6">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" required>
+                  </div>
+                  <div class="col-md-6">
+                    <label for="phone" class="form-label">Phone</label>
+                    <input type="text" class="form-control" id="phone" required>
+                  </div>
+                  <div class="col-md-6">
+                    <label for="dob" class="form-label">Date of Birth</label>
+                    <input type="date" class="form-control" id="dob" min="1955-01-01" max="2025-12-31" required>
+                  </div>
+                  <div class="col-md-12">
+                    <label for="address" class="form-label">Address</label>
+                    <textarea class="form-control" id="address" rows="3" required></textarea>
+                  </div>
+                  
+                  <!-- ✅ Profile Picture Upload -->
+                  <div class="col-md-6">
+                    <label for="profile_picture" class="form-label">Profile Picture</label>
+                    <input type="file" class="form-control" id="profile_picture" accept="image/*">
+                  </div>
+                  
+                  <!-- ✅ Contribution Amount (Read-Only) -->
+                  <div class="col-md-6">
+                    <label for="contribution_amount" class="form-label">Total Contribution</label>
+                    <input type="text" class="form-control" id="contribution_amount" disabled>
+                  </div>
+      
+                  <div class="col-12">
+                    <button type="submit" class="btn btn-primary">Update Profile</button>
+                  </div>
+                </form>
               </div>
+            </div>
           </div>
-          
-          <!--end row-->   
-          <script>
-            async function fetchSponsorData() {
+      
+          <!-- About Section -->
+          <div class="col-12 col-xl-4">
+            <div class="card rounded-4">
+              <div class="card-body">
+                <div class="d-flex align-items-start justify-content-between mb-3">
+                  <h5 class="mb-0 fw-bold">About</h5>
+                </div>
+                <div class="full-info">
+                  <div class="info-list d-flex flex-column gap-3">
+                    <div class="info-list-item d-flex align-items-center gap-3">
+                      <span class="material-icons-outlined">account_circle</span>
+                      <p class="mb-0" id="sponsorFullName"><strong>Full Name:</strong> Loading...</p>
+                    </div>
+                    <div class="info-list-item d-flex align-items-center gap-3">
+                      <span class="material-icons-outlined">done</span>
+                      <p class="mb-0"><strong>Role:</strong> Sponsor</p>
+                    </div>
+                    <div class="info-list-item d-flex align-items-center gap-3">
+                      <span class="material-icons-outlined">send</span>
+                      <p class="mb-0" id="sponsorAboutEmail"><strong>Email:</strong> Loading...</p>
+                    </div>
+                    <div class="info-list-item d-flex align-items-center gap-3">
+                      <span class="material-icons-outlined">call</span>
+                      <p class="mb-0" id="sponsorPhone"><strong>Phone:</strong> Loading...</p>
+                    </div>
+                    <!-- ✅ Contribution Amount -->
+                    <div class="info-list-item d-flex align-items-center gap-3">
+                      <span class="material-icons-outlined">monetization_on</span>
+                      <p class="mb-0" id="sponsorContribution"><strong>Total Contribution:</strong> Loading...</p>
+                    </div>
+                    <!-- ✅ Account Status -->
+                    <div class="info-list-item d-flex align-items-center gap-3">
+                      <span class="material-icons-outlined">toggle_on</span>
+                      <p class="mb-0" id="sponsorStatus"><strong>Status:</strong> Loading...</p>
+                    </div>
+                    <!-- ✅ Account Creation Date -->
+                    <div class="info-list-item d-flex align-items-center gap-3">
+                      <span class="material-icons-outlined">calendar_today</span>
+                      <p class="mb-0" id="sponsorCreatedAt"><strong>Created At:</strong> Loading...</p>
+                    </div>
+                    <!-- ✅ Last Updated Date -->
+                    <div class="info-list-item d-flex align-items-center gap-3">
+                      <span class="material-icons-outlined">update</span>
+                      <p class="mb-0" id="sponsorLastUpdated"><strong>Last Updated:</strong> Loading...</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>      
+  
+      <!-- JavaScript -->
+       <script>
+      // ✅ Fetch Sponsor Data
+async function fetchSponsorData() {
     try {
         const response = await fetch('/getSponsorData');
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
+        if (!response.ok) throw new Error(`Failed to fetch sponsor data: ${response.status}`);
 
         const sponsor = await response.json();
-        document.getElementById('first_name').value = sponsor.first_name;
-        document.getElementById('last_name').value = sponsor.last_name;
-        document.getElementById('email').value = sponsor.email;
-        document.getElementById('phone').value = sponsor.phone;
-        document.getElementById('dob').value = sponsor.dob;
-        document.getElementById('address').value = sponsor.address;
+        console.log('Sponsor Data:', sponsor);
+
+        // ✅ Populate Profile Section
+        document.getElementById('sponsor-Name').textContent = sponsor.full_name || 'Not provided';
+        document.getElementById('sponsorMainEmail').textContent = sponsor.email || 'Not provided';
+
+        // ✅ Set Profile Avatar with correct path
+        document.getElementById('sponsor-Avatar').src = sponsor.profile_picture 
+            ? sponsor.profile_picture 
+            : '/uploads/default-avatar.png';
+
+        // ✅ Populate Edit Form
+        document.getElementById('first_name').value = sponsor.first_name || '';
+        document.getElementById('last_name').value = sponsor.last_name || '';
+        document.getElementById('email').value = sponsor.email || '';
+        document.getElementById('phone').value = sponsor.phone || '';
+        document.getElementById('dob').value = sponsor.dob ? new Date(sponsor.dob).toISOString().split('T')[0] : '';
+        document.getElementById('address').value = sponsor.address || '';
+        document.getElementById('contribution_amount').value = sponsor.contribution_amount || '0.00';
+
+        // ✅ Populate About Section
+        document.getElementById('sponsorFullName').textContent = `Full Name: ${sponsor.first_name || ''} ${sponsor.last_name || ''}`;
+        document.getElementById('sponsorAboutEmail').textContent = `Email: ${sponsor.email || ''}`;
+        document.getElementById('sponsorPhone').textContent = `Phone: ${sponsor.phone || ''}`;
+        document.getElementById('sponsorContribution').textContent = `Total Contribution: ₹${sponsor.contribution_amount}`;
+        document.getElementById('sponsorStatus').textContent = `Status: ${sponsor.status}`;
+        document.getElementById('sponsorCreatedAt').textContent = `Created At: ${sponsor.created_at}`;
+        document.getElementById('sponsorLastUpdated').textContent = `Last Updated: ${sponsor.last_updated_at}`;
     } catch (error) {
         console.error('Error fetching sponsor data:', error);
-        alert('Failed to fetch sponsor data.');
+        alert('Failed to load sponsor data.');
     }
 }
 
-// Load sponsor data when page loads
-document.addEventListener('DOMContentLoaded', fetchSponsorData);
-
+// ✅ Update Profile Data (Including Profile Picture)
 async function updateSponsorProfile(event) {
-    event.preventDefault(); // Prevent form submission
+    event.preventDefault();
 
-    const updatedData = {
-        first_name: document.getElementById('first_name').value,
-        last_name: document.getElementById('last_name').value,
-        email: document.getElementById('email').value,
-        phone: document.getElementById('phone').value,
-        dob: document.getElementById('dob').value,
-        address: document.getElementById('address').value,
-    };
+    const formData = new FormData();
+    formData.append('first_name', document.getElementById('first_name').value);
+    formData.append('last_name', document.getElementById('last_name').value);
+    formData.append('email', document.getElementById('email').value);
+    formData.append('phone', document.getElementById('phone').value);
+    formData.append('dob', document.getElementById('dob').value);
+    formData.append('address', document.getElementById('address').value);
+
+    // ✅ Include Profile Picture if selected
+    const file = document.getElementById('profile_picture').files[0];
+    if (file) {
+        formData.append('profile_picture', file);
+    }
 
     try {
         const response = await fetch('/updateSponsorProfile', {
             method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(updatedData),
+            body: formData
         });
 
         const result = await response.json();
-        alert(result.message);
+        alert(result.message || 'Profile updated successfully');
+
+        // ✅ Update Avatar if new file was uploaded
+        if (result.filePath) {
+            document.getElementById('sponsorAvatar').src = `${result.filePath}?t=${new Date().getTime()}`;
+        }
+
+        // ✅ Refresh Data
+        fetchSponsorData();
     } catch (error) {
         console.error('Error updating profile:', error);
         alert('Failed to update profile.');
     }
 }
 
-// Attach event listener to update button
+// ✅ Event Listeners
+document.addEventListener('DOMContentLoaded', fetchSponsorData);
 document.getElementById('updateProfileForm').addEventListener('submit', updateSponsorProfile);
-
-          </script>      
-        </div>
+</script>
     </div>
-</main>
+  </main>
+  
   <!--end main wrapper-->
 
   <!--bootstrap js-->
