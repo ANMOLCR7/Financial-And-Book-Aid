@@ -2,7 +2,7 @@ const express = require('express');
 const mysql = require('mysql2/promise');  // Use promise-based mysql
 const bodyParser = require('body-parser');
 const path = require('path');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const app = express();
 const PORT = 3000;
 const session = require('express-session');
@@ -75,6 +75,7 @@ const db = mysql.createPool({
 })();
 
 //Student Panel
+//(1.financial apply)
 // Handle Financial Aid Form Submission
 app.post('/submit-financial-aid', async (req, res) => {
     console.log('Received Data:', req.body); // Log the received data for debugging
@@ -138,7 +139,8 @@ app.get('/api/financial-aid-requests/:student_id', async (req, res) => {
       res.status(500).json({ error: 'Internal Server Error' });
     }
   });
-  
+
+//(2. book donation Apply)
 // Endpoint to handle book donations
 app.post('/api/book-donations', async (req, res) => {
     console.log('Received Book Donation Data:', req.body); // Log the received data
@@ -178,7 +180,7 @@ app.post('/api/book-donations', async (req, res) => {
     }
 });
 
-//admin check the donations
+//(3. book donation view)
 app.get('/api/book-donations', async (req, res) => {
     try {
         // Query to get all donations
@@ -202,6 +204,17 @@ app.get('/api/book-donations', async (req, res) => {
             error: true,
             message: 'Internal Server Error.',
         });
+    }
+});
+
+//(4.check student process)
+app.get('/api/students/requests/financial-aid', async (req, res) => {
+    try {
+        const [results] = await db.execute('SELECT * FROM financial_aid_requests');
+        res.json(results);
+    } catch (error) {
+        console.error('Error fetching requests:', error);
+        res.status(500).json({ error: 'Database error' });
     }
 });
 
@@ -312,7 +325,7 @@ app.get('/api/financial-aid-requests', async (req, res) => {
 
 //(2. finncial aid request)
 // Get all admin financial aid requests
-app.get('/api/financial-aid-requests', async (req, res) => {
+app.get('/api/student-financial-aid/requests', async (req, res) => {
     try {
         const query = `
             SELECT request_id, student_id, first_name, last_name, amount_requested, 
@@ -369,30 +382,6 @@ app.get('/admin/get-request-details/:requestId', async (req, res) => {
 });
 
 //(3.book donated)
-//admin to see book donations
-app.get('/api/admin/book-donations', async (req, res) => {
-    // Example check for admin authentication (this depends on your auth logic)
-    if (!req.user || !req.user.isAdmin) {
-        return res.status(403).json({ error: true, message: 'Access denied' });
-    }
-
-    try {
-        const query = 'SELECT donation_id, book_title, CONCAT(first_name, " ", last_name) AS student_name, phone_number, email_address FROM book_donations';
-        const [result] = await db.execute(query);
-        
-        res.status(200).json({
-            success: true,
-            data: result
-        });
-    } catch (error) {
-        console.error('Error fetching book donations:', error);
-        res.status(500).json({
-            error: true,
-            message: 'Failed to fetch book donations.'
-        });
-    }
-});
-
 //admin check the donations
 app.get('/api/book-donations', async (req, res) => {
     try {

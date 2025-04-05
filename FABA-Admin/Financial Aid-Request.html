@@ -6,7 +6,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>FABA</title>
+  <title>SFABA</title>
   <!--favicon-->
   <link rel="icon" href="assets/images/favicon-32x32.png" type="image/png">
   <!-- loader-->
@@ -81,7 +81,7 @@
       <img src="assets/images/logo-icon.png" class="logo-img" alt="">
     </div>
     <div class="logo-name flex-grow-1">
-      <h5 class="mb-0">FABA</h5>
+      <h5 class="mb-0">SFABA</h5>
     </div>
     <div class="sidebar-close">
       <span class="material-icons-outlined">close</span>
@@ -174,7 +174,7 @@
         </div>
         <script>
           // Fetch and display financial aid requests
-fetch('/api/financial-aid-requests') // Update API endpoint as needed
+fetch('/api/student-financial-aid/requests') // Update API endpoint as needed
     .then(response => response.json())
     .then(data => {
         const tableBody = document.getElementById('requestsTableBody');
